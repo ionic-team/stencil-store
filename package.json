@@ -6,7 +6,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p .",
-    "release": "np"
+    "release": "np",
+    "version": "npm run build"
   },
   "keywords": [
     "stencil",
@@ -17,7 +18,7 @@
     "hooks"
   ],
   "files": [
-    "dists"
+    "dist"
   ],
   "author": "Manu Mtz.-Almeida",
   "license": "MIT",
