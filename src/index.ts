@@ -1,5 +1,8 @@
-import { forceUpdate, getActiveRender } from '@stencil/core';
+// @ts-ignore
+import { forceUpdate, getRenderingElement } from '@stencil/core';
 
+// TODO
+// reset()
 export const createStore = <T extends {[key: string]: any}>(defaultState?: T) => {
   const states = new Map<string, any>(Object.entries(defaultState ?? {}));
   const elmsToUpdate = new Map<string, any[]>();
@@ -15,7 +18,7 @@ export const createStore = <T extends {[key: string]: any}>(defaultState?: T) =>
   }
 
   const get = <P extends keyof T>(state: P & string): T[P] => {
-    const elm = getActiveRender();
+    const elm = getRenderingElement();
     if (elm) {
       appendToMap(elmsToUpdate, state, elm);
     }
@@ -43,13 +46,30 @@ export const createStore = <T extends {[key: string]: any}>(defaultState?: T) =>
     set(_, propName, value) {
       set(propName as any, value);
       return true;
-    },
-    has(_, propName) {
-      return states.has(propName as any);
     }
   });
 
+  const subscribe = (gen: (states: T) => void) => {
+    const states = new Proxy({} , {
+      get(_, propName: any) {
+        appendToMap(computedStates, propName, handler);
+        return get(propName);
+      },
+      set(_, propName: any, value: any) {
+        set(propName, value);
+        return true;
+      }
+    });
+    const handler = () => {
+      gen(states as T);
+    };
+    handler();
+  };
+
   return {
     state,
-  }
+    get,
+    set,
+    subscribe
+  };
 };

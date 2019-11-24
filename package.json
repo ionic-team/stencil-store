@@ -5,7 +5,8 @@
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "release": "np"
   },
   "keywords": [
     "stencil",
@@ -20,10 +21,8 @@
   ],
   "author": "Manu Mtz.-Almeida",
   "license": "MIT",
-  "peerDependencies": {
-    "@stencil/core": "^1.9.0"
-  },
   "devDependencies": {
-    "@stencil/core": "^1.8.1"
+    "@stencil/core": "^1.8.2-1",
+    "np": "^5.1.3"
   }
 }
