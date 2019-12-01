@@ -5,4 +5,4 @@ export const appendToMap = <K, V>(map: Map<K, V[]>, propName: K, value: V) => {
   } else if (!items.includes(value)) {
     items.push(value);
   }
-}
+};

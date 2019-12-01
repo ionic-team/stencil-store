@@ -14,7 +14,7 @@ export const createStore = <T extends { [key: string]: any }>(defaultState?: T) 
 
     computedStates.forEach(computeds => computeds.forEach(h => h()));
     subscriptions.forEach(s => s('reset', state));
-  }
+  };
 
   const get = <P extends keyof T>(propName: P & string): T[P] => {
     subscriptions.forEach(s => s('get', state, propName));
@@ -33,7 +33,7 @@ export const createStore = <T extends { [key: string]: any }>(defaultState?: T) 
 
       subscriptions.forEach(s => s('set', state, propName, value, oldValue));
     }
-  }
+  };
 
   const state = new Proxy(defaultState, {
     get(_, propName) {
@@ -42,20 +42,23 @@ export const createStore = <T extends { [key: string]: any }>(defaultState?: T) 
     set(_, propName, value) {
       set(propName as any, value);
       return true;
-    }
+    },
   });
 
   const computed = (gen: (states: T) => void) => {
-    const states = new Proxy({}, {
-      get(_, propName: any) {
-        appendToMap(computedStates, propName, handler);
-        return get(propName);
-      },
-      set(_, propName: any, value: any) {
-        set(propName, value);
-        return true;
+    const states = new Proxy(
+      {},
+      {
+        get(_, propName: any) {
+          appendToMap(computedStates, propName, handler);
+          return get(propName);
+        },
+        set(_, propName: any, value: any) {
+          set(propName, value);
+          return true;
+        },
       }
-    });
+    );
     const handler = () => {
       gen(states as T);
     };
@@ -68,20 +71,31 @@ export const createStore = <T extends { [key: string]: any }>(defaultState?: T) 
       return;
     }
 
-    subscriptions.push(((s): StoreSubscription<T> => {
-      const hasGet = 'get' in s;
-      const hasSet = 'set' in s;
-      const hasReset = 'reset' in s;
+    subscriptions.push(
+      ((s): StoreSubscription<T> => {
+        const hasGet = 'get' in s;
+        const hasSet = 'set' in s;
+        const hasReset = 'reset' in s;
 
-      return <K extends keyof T>(action: 'get' | 'set' | 'reset', store: T, propName?: K, newValue?: T[K], oldValue?: T[K]) => {
-        switch (action) {
-          case 'get': hasGet && s.get(store, propName);
-          case 'set': hasSet && s.set(store, propName, newValue, oldValue);
-          case 'reset': hasReset && s.reset(store);
-        }
-      };
-    })(subscription));
-  }
+        return <K extends keyof T>(
+          action: 'get' | 'set' | 'reset',
+          store: T,
+          propName?: K,
+          newValue?: T[K],
+          oldValue?: T[K]
+        ) => {
+          switch (action) {
+            case 'get':
+              hasGet && s.get(store, propName);
+            case 'set':
+              hasSet && s.set(store, propName, newValue, oldValue);
+            case 'reset':
+              hasReset && s.reset(store);
+          }
+        };
+      })(subscription)
+    );
+  };
 
   subscribe(stencilSubscription());
 
@@ -89,7 +103,7 @@ export const createStore = <T extends { [key: string]: any }>(defaultState?: T) 
     /**
      * Proxied object that will detect dependencies and call
      * the subscriptions and computed properties.
-     * 
+     *
      * If available, it will detect from which Stencil Component
      * it was called and rerender it when the property changes.
      */
@@ -103,7 +117,7 @@ export const createStore = <T extends { [key: string]: any }>(defaultState?: T) 
 
     /**
      * Only useful if you need to support IE11.
-     * 
+     *
      * @example
      * const { state, get } = createStore({ hola: 'hello', adios: 'goodbye' });
      * console.log(state.hola); // If you don't need to support IE11, use this way.
@@ -113,7 +127,7 @@ export const createStore = <T extends { [key: string]: any }>(defaultState?: T) 
 
     /**
      * Only useful if you need to support IE11.
-     * 
+     *
      * @example
      * const { state, get } = createStore({ hola: 'hello', adios: 'goodbye' });
      * state.hola = 'ola'; // If you don't need to support IE11, use this way.

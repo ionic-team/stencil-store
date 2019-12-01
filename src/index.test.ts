@@ -32,8 +32,12 @@ describe('computed', () => {
       greeting: '',
       personInfo: '',
     });
-    const computedFromHelloAndName = jest.fn().mockImplementation(state => state.greeting = `${state.hello}, ${state.name}`);
-    const computedFromNameAndAge = jest.fn().mockImplementation(state => state.personInfo = `${state.name} (${state.age})`);
+    const computedFromHelloAndName = jest
+      .fn()
+      .mockImplementation(state => (state.greeting = `${state.hello}, ${state.name}`));
+    const computedFromNameAndAge = jest
+      .fn()
+      .mockImplementation(state => (state.personInfo = `${state.name} (${state.age})`));
 
     computed(computedFromHelloAndName);
     computed(computedFromNameAndAge);
@@ -57,14 +61,14 @@ describe('computed', () => {
 
     expect(computedFromHelloAndName).toHaveBeenCalledTimes(1);
     expect(computedFromNameAndAge).toHaveBeenCalledTimes(1);
-  })
+  });
 });
 
 describe('reset', () => {
   test('returns all variable to their original state', () => {
     const { reset, state } = createStore({
       hola: 'hola',
-      name: 'Sergio'
+      name: 'Sergio',
     });
 
     state.hola = 'hello';
@@ -122,7 +126,7 @@ describe('reset', () => {
     const { subscribe, reset } = createStore({ hola: 'hola' });
     const subscription = jest.fn();
     subscribe({
-      reset: subscription
+      reset: subscription,
     });
 
     reset();
@@ -133,107 +137,106 @@ describe('reset', () => {
 
 describe.each([
   ['proxy', (state, _get, property) => state[property]],
-  ['get fn', (_state, get, property) => get(property)]
-] as [
-  string,
-  <T, K extends keyof T>(s: T, get: (prop: K) => T[K], prop: K) => T[K],
-][])('get (%s)', (_, getter) => {
-  test('returns the value for the property in the store', () => {
-    const { get, state } = createStore({
-      hola: 'hello'
+  ['get fn', (_state, get, property) => get(property)],
+] as [string, <T, K extends keyof T>(s: T, get: (prop: K) => T[K], prop: K) => T[K]][])(
+  'get (%s)',
+  (_, getter) => {
+    test('returns the value for the property in the store', () => {
+      const { get, state } = createStore({
+        hola: 'hello',
+      });
+
+      expect(getter(state, get, 'hola')).toBe('hello');
     });
 
-    expect(getter(state, get, 'hola')).toBe('hello');
-  });
+    test('returns the modified value in a computed', () => {
+      const { computed, get, state } = createStore({
+        hola: 'hello',
+        ru: '',
+      });
+      computed(states => (states.ru = `${states.hola}, ${states.hola}, ${states.hola}`));
 
-  test('returns the modified value in a computed', () => {
-    const { computed, get, state } = createStore({
-      hola: 'hello',
-      ru: '',
-    });
-    computed(states => states.ru = `${states.hola}, ${states.hola}, ${states.hola}`);
-
-    expect(getter(state, get, 'ru')).toBe('hello, hello, hello');
-  });
-
-  test('returns the modified value after being set', () => {
-    const { get, state } = createStore({
-      hola: 'hello',
+      expect(getter(state, get, 'ru')).toBe('hello, hello, hello');
     });
 
-    state.hola = 'ola';
+    test('returns the modified value after being set', () => {
+      const { get, state } = createStore({
+        hola: 'hello',
+      });
 
-    expect(getter(state, get, 'hola')).toBe('ola');
-  });
+      state.hola = 'ola';
 
-  test('calls subscriptions (fn)', () => {
-    const { get, subscribe, state } = createStore({
-      hola: 'hello'
-    });
-    const subscription = jest.fn();
-    subscribe(subscription);
-
-    getter(state, get, 'hola');
-
-    expect(subscription).toHaveBeenCalledWith('get', state, 'hola');
-  });
-
-  test('calls subscriptions (object)', () => {
-    const { get, subscribe, state } = createStore({
-      hola: 'hello'
-    });
-    const subscription = jest.fn();
-    subscribe({
-      get: subscription
+      expect(getter(state, get, 'hola')).toBe('ola');
     });
 
-    getter(state, get, 'hola');
+    test('calls subscriptions (fn)', () => {
+      const { get, subscribe, state } = createStore({
+        hola: 'hello',
+      });
+      const subscription = jest.fn();
+      subscribe(subscription);
 
-    expect(subscription).toHaveBeenCalledWith(state, 'hola');
-  });
-});
+      getter(state, get, 'hola');
+
+      expect(subscription).toHaveBeenCalledWith('get', state, 'hola');
+    });
+
+    test('calls subscriptions (object)', () => {
+      const { get, subscribe, state } = createStore({
+        hola: 'hello',
+      });
+      const subscription = jest.fn();
+      subscribe({
+        get: subscription,
+      });
+
+      getter(state, get, 'hola');
+
+      expect(subscription).toHaveBeenCalledWith(state, 'hola');
+    });
+  }
+);
 
 describe.each([
-  ['proxy', (state, _set, prop, value) => state[prop] = value],
-  ['set fn', (_state, set, prop, value) => set(prop, value)]
-] as [
-  string,
-  <T, K extends keyof T>(s: T, set: (prop: K, value: T[K]) => void, prop: K, value: T[K]) => void
-][])('set (%s)', (_, setter) => {
+  ['proxy', (state, _set, prop, value) => (state[prop] = value)],
+  ['set fn', (_state, set, prop, value) => set(prop, value)],
+] as [string, <T, K extends keyof T>(s: T, set: (prop: K, value: T[K]) => void, prop: K, value: T[K]) => void][])(
+  'set (%s)',
+  (_, setter) => {
+    test('sets the value for a property', () => {
+      const { set, state } = createStore({
+        hola: 'hello',
+      });
 
-  test('sets the value for a property', () => {
-    const { set, state } = createStore({
-      hola: 'hello'
+      setter(state, set, 'hola', 'ola');
+
+      expect(state.hola).toBe('ola');
     });
 
-    setter(state, set, 'hola', 'ola');
+    test('calls subscriptions (fn)', () => {
+      const { set, subscribe, state } = createStore({
+        hola: 'hello',
+      });
+      const subscription = jest.fn();
+      subscribe(subscription);
 
-    expect(state.hola).toBe('ola');
-  });
+      setter(state, set, 'hola', 'ola');
 
-  test('calls subscriptions (fn)', () => {
-    const { set, subscribe, state } = createStore({
-      hola: 'hello'
-    });
-    const subscription = jest.fn();
-    subscribe(subscription);
-
-    setter(state, set, 'hola', 'ola');
-
-    expect(subscription).toHaveBeenCalledWith('set', state, 'hola', 'ola', 'hello');
-  });
-
-  test('calls subscriptions (object)', () => {
-    const { set, subscribe, state } = createStore({
-      hola: 'hello'
-    });
-    const subscription = jest.fn();
-    subscribe({
-      set: subscription
+      expect(subscription).toHaveBeenCalledWith('set', state, 'hola', 'ola', 'hello');
     });
 
-    setter(state, set, 'hola', 'ola');
+    test('calls subscriptions (object)', () => {
+      const { set, subscribe, state } = createStore({
+        hola: 'hello',
+      });
+      const subscription = jest.fn();
+      subscribe({
+        set: subscription,
+      });
 
-    expect(subscription).toHaveBeenCalledWith(state, 'hola', 'ola', 'hello');
-  });
-});
+      setter(state, set, 'hola', 'ola');
+
+      expect(subscription).toHaveBeenCalledWith(state, 'hola', 'ola', 'hello');
+    });
+  }
+);
