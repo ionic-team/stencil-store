@@ -43,6 +43,5 @@ export interface CreateStoreReturn<T> {
 }
 
 export interface ComputedReturn<T> {
-  subscription: StoreSubscriptionObject<T>;
-  computed: (gen: (states: T) => void) => void;
+  (gen: (states: T) => void): void;
 }

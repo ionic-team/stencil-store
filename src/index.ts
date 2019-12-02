@@ -44,9 +44,8 @@ export const createStore = <T extends { [key: string]: any }>(
     subscriptions.push(toSubscription(subscription));
   };
 
-  const { computed, subscription } = computedSubscription({ get, set });
-  subscribe(subscription);
-  subscribe(stencilSubscription());
+  const computed = computedSubscription({ get, set, subscribe });
+  stencilSubscription({ subscribe });
 
   return {
     /**

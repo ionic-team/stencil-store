@@ -1,13 +1,13 @@
 // @ts-ignore
 import { forceUpdate, getRenderingElement } from '@stencil/core';
 
-import { StoreSubscriptionObject } from '../types';
+import { CreateStoreReturn } from '../types';
 import { appendToMap } from '../utils';
 
-export const stencilSubscription: <T>() => StoreSubscriptionObject<T> = () => {
+export const stencilSubscription = <T>({ subscribe }: Pick<CreateStoreReturn<T>, 'subscribe'>) => {
   const elmsToUpdate = new Map<string, any[]>();
 
-  return {
+  subscribe({
     get(_state, propName) {
       const elm = typeof getRenderingElement === 'function' && getRenderingElement();
       if (elm) {
@@ -23,5 +23,5 @@ export const stencilSubscription: <T>() => StoreSubscriptionObject<T> = () => {
         elmsToUpdate.set(propName as string, elements.filter(forceUpdate));
       }
     },
-  };
+  });
 };
