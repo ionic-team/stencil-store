@@ -24,3 +24,25 @@ export interface StoreSubscriptionObject<StoreType> {
   ): void;
   reset?(state: StoreType): void;
 }
+
+export interface Getter<T> {
+  <P extends keyof T>(propName: P & string): T[P];
+}
+
+export interface Setter<T> {
+  <P extends keyof T>(propName: P & string, value: T[P]): void;
+}
+
+export interface CreateStoreReturn<T> {
+  state: T;
+  get: Getter<T>;
+  set: Setter<T>;
+  reset: () => void;
+  subscribe(subscription: StoreSubscription<T> | StoreSubscriptionObject<T>): void;
+  computed: any;
+}
+
+export interface ComputedReturn<T> {
+  subscription: StoreSubscriptionObject<T>;
+  computed: (gen: (states: T) => void) => void;
+}

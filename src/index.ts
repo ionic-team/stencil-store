@@ -1,18 +1,17 @@
+import { computedSubscription } from './subscriptions/computed';
 import { stencilSubscription } from './subscriptions/stencil';
-import { StoreSubscription, StoreSubscriptionObject } from './types';
-import { appendToMap } from './utils';
+import { StoreSubscription, StoreSubscriptionObject, CreateStoreReturn } from './types';
+import { toSubscription } from './utils';
 
-// TODO
-// reset()
-export const createStore = <T extends { [key: string]: any }>(defaultState?: T) => {
+export const createStore = <T extends { [key: string]: any }>(
+  defaultState?: T
+): CreateStoreReturn<T> => {
   let states = new Map<string, any>(Object.entries(defaultState ?? {}));
-  const computedStates = new Map<string, (() => void)[]>();
   const subscriptions: StoreSubscription<T>[] = [];
 
   const reset = (): void => {
     states = new Map<string, any>(Object.entries(defaultState ?? {}));
 
-    computedStates.forEach(computeds => computeds.forEach(h => h()));
     subscriptions.forEach(s => s('reset', state));
   };
 
@@ -26,10 +25,6 @@ export const createStore = <T extends { [key: string]: any }>(defaultState?: T) 
     const oldValue = states.get(propName);
     if (oldValue !== value) {
       states.set(propName, value);
-      const computed = computedStates.get(propName);
-      if (computed) {
-        computed.forEach(h => h());
-      }
 
       subscriptions.forEach(s => s('set', state, propName, value, oldValue));
     }
@@ -45,58 +40,12 @@ export const createStore = <T extends { [key: string]: any }>(defaultState?: T) 
     },
   });
 
-  const computed = (gen: (states: T) => void) => {
-    const states = new Proxy(
-      {},
-      {
-        get(_, propName: any) {
-          appendToMap(computedStates, propName, handler);
-          return get(propName);
-        },
-        set(_, propName: any, value: any) {
-          set(propName, value);
-          return true;
-        },
-      }
-    );
-    const handler = () => {
-      gen(states as T);
-    };
-    handler();
-  };
-
   const subscribe = (subscription: StoreSubscription<T> | StoreSubscriptionObject<T>): void => {
-    if (typeof subscription === 'function') {
-      subscriptions.push(subscription);
-      return;
-    }
-
-    subscriptions.push(
-      ((s): StoreSubscription<T> => {
-        const hasGet = 'get' in s;
-        const hasSet = 'set' in s;
-        const hasReset = 'reset' in s;
-
-        return <K extends keyof T>(
-          action: 'get' | 'set' | 'reset',
-          store: T,
-          propName?: K,
-          newValue?: T[K],
-          oldValue?: T[K]
-        ) => {
-          switch (action) {
-            case 'get':
-              hasGet && s.get(store, propName);
-            case 'set':
-              hasSet && s.set(store, propName, newValue, oldValue);
-            case 'reset':
-              hasReset && s.reset(store);
-          }
-        };
-      })(subscription)
-    );
+    subscriptions.push(toSubscription(subscription));
   };
 
+  const { computed, subscription } = computedSubscription({ get, set });
+  subscribe(subscription);
   subscribe(stencilSubscription());
 
   return {
