@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
   <title>Stencil Component Starter</title>
 
-  <script type="module" src="/build/stencil-tests.esm.js"></script>
-  <script nomodule src="/build/stencil-tests.js"></script>
+  <script type="module" src="/build/stencil-store-tests.esm.js"></script>
+  <script nomodule src="/build/stencil-store-tests.js"></script>
 
 </head>
 <body>
 
-  <my-component first="Stencil" last="'Don't call me a framework' JS"></my-component>
-
+  <display-store store-key="hello"></display-store>
+  <change-store store-key="hello" store-value="other-value"></change-store>
 </body>
 </html>

@@ -7,5 +7,8 @@
   "scripts": {
     "test": "lerna run test",
     "test.ci": "lerna run test.ci"
+  },
+  "dependencies": {
+    "@types/jest": "^24.0.23"
   }
 }

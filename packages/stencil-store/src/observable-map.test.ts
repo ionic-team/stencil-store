@@ -1,72 +1,8 @@
-import { createStore } from './index';
-
-describe('computed', () => {
-  test('runs as soon as computed is called', () => {
-    const { computed } = createStore({});
-    const computedCallback = jest.fn();
-
-    computed(computedCallback);
-
-    expect(computedCallback).toHaveBeenCalledTimes(1);
-  });
-
-  test('modifies the actual state', () => {
-    const { state, computed } = createStore({
-      hello: 'hola',
-      name: 'Sergio',
-      greeting: '',
-    });
-
-    computed(state => {
-      state.greeting = `${state.hello}, ${state.name}`;
-    });
-
-    expect(state.greeting).toBe('hola, Sergio');
-  });
-
-  test('only calls computeds that depend on that property', () => {
-    const { state, computed } = createStore({
-      hello: 'hola',
-      name: 'Sergio',
-      age: 32,
-      greeting: '',
-      personInfo: '',
-    });
-    const computedFromHelloAndName = jest
-      .fn()
-      .mockImplementation(state => (state.greeting = `${state.hello}, ${state.name}`));
-    const computedFromNameAndAge = jest
-      .fn()
-      .mockImplementation(state => (state.personInfo = `${state.name} (${state.age})`));
-
-    computed(computedFromHelloAndName);
-    computed(computedFromNameAndAge);
-
-    computedFromHelloAndName.mockClear();
-    computedFromNameAndAge.mockClear();
-
-    state.hello = 'ola';
-
-    expect(computedFromHelloAndName).toHaveBeenCalledTimes(1);
-    expect(computedFromNameAndAge).not.toHaveBeenCalled();
-    computedFromHelloAndName.mockClear();
-
-    state.age = 28; // I look younger, anyway ;P
-
-    expect(computedFromHelloAndName).not.toHaveBeenCalled();
-    expect(computedFromNameAndAge).toHaveBeenCalledTimes(1);
-    computedFromNameAndAge.mockClear();
-
-    state.name = 'Manu';
-
-    expect(computedFromHelloAndName).toHaveBeenCalledTimes(1);
-    expect(computedFromNameAndAge).toHaveBeenCalledTimes(1);
-  });
-});
+import { createObservableMap } from './observable-map';
 
 describe('reset', () => {
   test('returns all variable to their original state', () => {
-    const { reset, state } = createStore({
+    const { reset, state } = createObservableMap({
       hola: 'hola',
       name: 'Sergio',
     });
@@ -84,7 +20,7 @@ describe('reset', () => {
   });
 
   test('extra properties get removed', () => {
-    const { reset, state } = createStore<Record<string, string>>({});
+    const { reset, state } = createObservableMap<Record<string, string>>({});
 
     state.hola = 'hello';
 
@@ -96,24 +32,8 @@ describe('reset', () => {
     expect(state).not.toHaveProperty('hola');
   });
 
-  test('calls computeds', () => {
-    const { computed, reset } = createStore({ hola: 'hola' });
-    const firstComputed = jest.fn().mockImplementation(s => s.hola);
-    const secondComputed = jest.fn().mockImplementation(s => s.hola);
-    computed(firstComputed);
-    computed(secondComputed);
-
-    firstComputed.mockClear();
-    secondComputed.mockClear();
-
-    reset();
-
-    expect(firstComputed).toHaveBeenCalled();
-    expect(secondComputed).toHaveBeenCalled();
-  });
-
   test('calls reset subscriptions (fn)', () => {
-    const { subscribe, reset } = createStore({ hola: 'hola' });
+    const { subscribe, reset } = createObservableMap({ hola: 'hola' });
     const subscription = jest.fn();
     subscribe(subscription);
 
@@ -123,7 +43,7 @@ describe('reset', () => {
   });
 
   test('calls reset subscriptions (object)', () => {
-    const { subscribe, reset } = createStore({ hola: 'hola' });
+    const { subscribe, reset } = createObservableMap({ hola: 'hola' });
     const subscription = jest.fn();
     subscribe({
       reset: subscription,
@@ -142,25 +62,15 @@ describe.each([
   'get (%s)',
   (_, getter) => {
     test('returns the value for the property in the store', () => {
-      const { get, state } = createStore({
+      const { get, state } = createObservableMap({
         hola: 'hello',
       });
 
       expect(getter(state, get, 'hola')).toBe('hello');
     });
 
-    test('returns the modified value in a computed', () => {
-      const { computed, get, state } = createStore({
-        hola: 'hello',
-        ru: '',
-      });
-      computed(states => (states.ru = `${states.hola}, ${states.hola}, ${states.hola}`));
-
-      expect(getter(state, get, 'ru')).toBe('hello, hello, hello');
-    });
-
     test('returns the modified value after being set', () => {
-      const { get, state } = createStore({
+      const { get, state } = createObservableMap({
         hola: 'hello',
       });
 
@@ -170,7 +80,7 @@ describe.each([
     });
 
     test('calls subscriptions (fn)', () => {
-      const { get, subscribe, state } = createStore({
+      const { get, subscribe, state } = createObservableMap({
         hola: 'hello',
       });
       const subscription = jest.fn();
@@ -182,7 +92,7 @@ describe.each([
     });
 
     test('calls subscriptions (object)', () => {
-      const { get, subscribe, state } = createStore({
+      const { get, subscribe, state } = createObservableMap({
         hola: 'hello',
       });
       const subscription = jest.fn();
@@ -204,7 +114,7 @@ describe.each([
   'set (%s)',
   (_, setter) => {
     test('sets the value for a property', () => {
-      const { set, state } = createStore({
+      const { set, state } = createObservableMap({
         hola: 'hello',
       });
 
@@ -214,7 +124,7 @@ describe.each([
     });
 
     test('calls subscriptions (fn)', () => {
-      const { set, subscribe, state } = createStore({
+      const { set, subscribe, state } = createObservableMap({
         hola: 'hello',
       });
       const subscription = jest.fn();
@@ -226,7 +136,7 @@ describe.each([
     });
 
     test('calls subscriptions (object)', () => {
-      const { set, subscribe, state } = createStore({
+      const { set, subscribe, state } = createObservableMap({
         hola: 'hello',
       });
       const subscription = jest.fn();

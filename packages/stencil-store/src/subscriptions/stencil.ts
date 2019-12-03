@@ -1,10 +1,10 @@
 // @ts-ignore
 import { forceUpdate, getRenderingElement } from '@stencil/core';
 
-import { CreateStoreReturn } from '../types';
+import { ObservableMap } from '../types';
 import { appendToMap } from '../utils';
 
-export const stencilSubscription = <T>({ subscribe }: Pick<CreateStoreReturn<T>, 'subscribe'>) => {
+export const stencilSubscription = <T>({ subscribe }: Pick<ObservableMap<T>, 'subscribe'>) => {
   const elmsToUpdate = new Map<string, any[]>();
 
   if (typeof getRenderingElement !== 'function') {

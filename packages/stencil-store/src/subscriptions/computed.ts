@@ -1,11 +1,11 @@
-import { ComputedReturn, CreateStoreReturn } from '../types';
+import { ComputedReturn, ObservableMap } from '../types';
 import { appendToMap } from '../utils';
 
 export const computedSubscription = <T>({
   get,
   set,
   subscribe,
-}: Pick<CreateStoreReturn<T>, 'get' | 'set' | 'subscribe'>): ComputedReturn<T> => {
+}: Pick<ObservableMap<T>, 'get' | 'set' | 'subscribe'>): ComputedReturn<T> => {
   const computedStates = new Map<string, (() => void)[]>();
 
   subscribe({
