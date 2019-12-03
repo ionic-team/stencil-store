@@ -1,0 +1,41 @@
+{
+  "name": "stencil-store-tests",
+  "version": "0.0.1",
+  "description": "Stencil Component Starter",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "es2015": "dist/esm/index.mjs",
+  "es2017": "dist/esm/index.mjs",
+  "types": "dist/types/components.d.ts",
+  "collection": "dist/collection/collection-manifest.json",
+  "collection:main": "dist/collection/index.js",
+  "unpkg": "dist/stencil-store-tests/stencil-store-tests.js",
+  "files": [
+    "dist/",
+    "loader/"
+  ],
+  "scripts": {
+    "build": "stencil build --docs",
+    "start": "stencil build --dev --watch --serve",
+    "lint": "npm run lint.prettier",
+    "lint.prettier": "node_modules/.bin/prettier --write 'src/**/*.ts{x,}'",
+    "test": "stencil test --spec --e2e",
+    "test.ci": "npm run test && npm run test.prettier",
+    "test.prettier": "node_modules/.bin/prettier --check 'src/**/*.ts{x,}' --ignore-path 'src/components.d.ts'",
+    "test.watch": "stencil test --spec --e2e --watchAll",
+    "generate": "stencil generate"
+  },
+  "devDependencies": {
+    "@stencil/core": "^1.8.2-1",
+    "@stencil/store": "latest",
+    "@types/jest": "24.0.23",
+    "@types/puppeteer": "1.20.3",
+    "jest": "24.9.0",
+    "jest-cli": "24.9.0",
+    "puppeteer": "1.20.0"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "prettier": "^1.19.1"
+  }
+}
