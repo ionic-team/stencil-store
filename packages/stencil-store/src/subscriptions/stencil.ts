@@ -14,7 +14,7 @@ export const stencilSubscription = <T>({ subscribe }: Pick<ObservableMap<T>, 'su
   }
 
   subscribe({
-    get(_state, propName) {
+    get(propName) {
       const elm = getRenderingElement();
       if (elm) {
         appendToMap(elmsToUpdate, propName as string, elm);
@@ -23,7 +23,7 @@ export const stencilSubscription = <T>({ subscribe }: Pick<ObservableMap<T>, 'su
     reset() {
       elmsToUpdate.forEach(elms => elms.forEach(forceUpdate));
     },
-    set(_state, propName) {
+    set(propName) {
       const elements = elmsToUpdate.get(propName as string);
       if (elements) {
         elmsToUpdate.set(propName as string, elements.filter(forceUpdate));
