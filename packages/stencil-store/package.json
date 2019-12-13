@@ -27,6 +27,7 @@
   "author": "Manu Mtz.-Almeida",
   "license": "MIT",
   "devDependencies": {
+    "@stencil/core": "1.9.0-2",
     "@types/jest": "^24.0.23",
     "jest": "24.8.0",
     "jest-cli": "24.8.0",
