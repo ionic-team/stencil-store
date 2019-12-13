@@ -13,38 +13,35 @@ describe('toSubscription', () => {
   describe('object', () => {
     test('calls get method', () => {
       const subscriptionObj = mockSubscriptionObject();
-      const subscription = toSubscription(subscriptionObj);
-      const state = { hola: 'hola' };
+      const subscription = toSubscription<{ hola: string }>(subscriptionObj);
 
-      subscription('get', state, 'hola');
+      subscription('get', 'hola');
 
-      expect(subscriptionObj.get).toHaveBeenCalledWith(state, 'hola');
+      expect(subscriptionObj.get).toHaveBeenCalledWith('hola');
       expect(subscriptionObj.set).not.toHaveBeenCalled();
       expect(subscriptionObj.reset).not.toHaveBeenCalled();
     });
 
     test('calls set method', () => {
       const subscriptionObj = mockSubscriptionObject();
-      const subscription = toSubscription(subscriptionObj);
-      const state = { hola: 'hola' };
+      const subscription = toSubscription<{ hola: string }>(subscriptionObj);
 
-      subscription('set', state, 'hola', 'ola', 'hola');
+      subscription('set', 'hola', 'ola', 'hola');
 
       expect(subscriptionObj.get).not.toHaveBeenCalled();
-      expect(subscriptionObj.set).toHaveBeenCalledWith(state, 'hola', 'ola', 'hola');
+      expect(subscriptionObj.set).toHaveBeenCalledWith('hola', 'ola', 'hola');
       expect(subscriptionObj.reset).not.toHaveBeenCalled();
     });
 
     test('calls reset method', () => {
       const subscriptionObj = mockSubscriptionObject();
-      const subscription = toSubscription(subscriptionObj);
-      const state = { hola: 'hola' };
+      const subscription = toSubscription<{ hola: string }>(subscriptionObj);
 
-      subscription('reset', state);
+      subscription('reset');
 
       expect(subscriptionObj.get).not.toHaveBeenCalled();
       expect(subscriptionObj.set).not.toHaveBeenCalled();
-      expect(subscriptionObj.reset).toHaveBeenCalledWith(state);
+      expect(subscriptionObj.reset).toHaveBeenCalledTimes(1);
     });
   });
 });
