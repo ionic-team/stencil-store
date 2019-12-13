@@ -12,7 +12,7 @@ export const computedSubscription = <T>({
     reset() {
       computedStates.forEach(computeds => computeds.forEach(h => h()));
     },
-    set(_state, propName) {
+    set(propName) {
       const computed = computedStates.get(propName as string);
       if (computed) {
         computed.forEach(h => h());

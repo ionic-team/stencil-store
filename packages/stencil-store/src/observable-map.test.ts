@@ -51,7 +51,7 @@ describe('reset', () => {
 
     reset();
 
-    expect(subscription).toHaveBeenCalledWith(expect.objectContaining({ hola: 'hola' }));
+    expect(subscription).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -88,7 +88,7 @@ describe.each([
 
       getter(state, get, 'hola');
 
-      expect(subscription).toHaveBeenCalledWith('get', state, 'hola');
+      expect(subscription).toHaveBeenCalledWith('get', 'hola');
     });
 
     test('calls subscriptions (object)', () => {
@@ -102,7 +102,7 @@ describe.each([
 
       getter(state, get, 'hola');
 
-      expect(subscription).toHaveBeenCalledWith(state, 'hola');
+      expect(subscription).toHaveBeenCalledWith('hola');
     });
   }
 );
@@ -132,7 +132,7 @@ describe.each([
 
       setter(state, set, 'hola', 'ola');
 
-      expect(subscription).toHaveBeenCalledWith('set', state, 'hola', 'ola', 'hello');
+      expect(subscription).toHaveBeenCalledWith('set', 'hola', 'ola', 'hello');
     });
 
     test('calls subscriptions (object)', () => {
@@ -146,7 +146,7 @@ describe.each([
 
       setter(state, set, 'hola', 'ola');
 
-      expect(subscription).toHaveBeenCalledWith(state, 'hola', 'ola', 'hello');
+      expect(subscription).toHaveBeenCalledWith('hola', 'ola', 'hello');
     });
   }
 );

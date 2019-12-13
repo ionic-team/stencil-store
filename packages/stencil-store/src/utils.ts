@@ -22,18 +22,17 @@ export const toSubscription = <T>(
 
   return <K extends keyof T>(
     action: 'get' | 'set' | 'reset',
-    store: T,
-    propName?: K,
+    propNameOrStore?: K,
     newValue?: T[K],
     oldValue?: T[K]
   ) => {
     switch (action) {
       case 'get':
-        return hasGet && subscription.get(store, propName);
+        return hasGet && subscription.get(propNameOrStore);
       case 'set':
-        return hasSet && subscription.set(store, propName, newValue, oldValue);
+        return hasSet && subscription.set(propNameOrStore, newValue, oldValue);
       case 'reset':
-        return hasReset && subscription.reset(store);
+        return hasReset && subscription.reset();
     }
   };
 };
