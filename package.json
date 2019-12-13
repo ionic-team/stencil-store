@@ -5,8 +5,8 @@
     "lerna": "^3.16.4"
   },
   "scripts": {
-    "test": "lerna run test",
-    "test.ci": "lerna run test.ci"
+    "test": "node_modules/.bin/lerna run test",
+    "test.ci": "node_modules/.bin/lerna run test.ci"
   },
   "dependencies": {
     "@types/jest": "^24.0.23"
