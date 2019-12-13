@@ -20,7 +20,7 @@ jobs:
     - name: npm install, build, and test
       run: |
         npm install
-        lerna bootstrap --ci
+        node_modules/.bin/lerna bootstrap --ci
         npm run test.ci
       env:
         CI: true
