@@ -39,7 +39,7 @@ describe('reset', () => {
 
     reset();
 
-    expect(subscription).toHaveBeenCalledWith('reset', expect.objectContaining({ hola: 'hola' }));
+    expect(subscription).toHaveBeenCalledWith('reset');
   });
 
   test('calls reset subscriptions (object)', () => {

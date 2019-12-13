@@ -10,7 +10,7 @@ export const createObservableMap = <T extends { [key: string]: any }>(
   const reset = (): void => {
     states = new Map<string, any>(Object.entries(defaultState ?? {}));
 
-    subscriptions.forEach(s => s('reset', state));
+    subscriptions.forEach(s => s('reset'));
   };
 
   const get = <P extends keyof T>(propName: P & string): T[P] => {
