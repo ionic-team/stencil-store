@@ -8,7 +8,8 @@
       "dom",
       "es2017"
     ],
-    "outDir": "dist",
+    "outDir": "build",
+    "declarationDir": "dist",
     "moduleResolution": "node",
     "module": "esnext",
     "target": "es2017",
