@@ -48,7 +48,7 @@ export const debounce = <T extends (...args: any) => any>(
     }
     timeoutId = setTimeout(() => {
       timeoutId = null;
-      fn.apply(args);
+      fn.apply(null, args);
     }, ms);
   };
 };
