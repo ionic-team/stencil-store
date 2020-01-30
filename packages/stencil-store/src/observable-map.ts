@@ -21,7 +21,7 @@ export const createObservableMap = <T extends { [key: string]: any }>(
 
   const set = <P extends keyof T>(propName: P & string, value: T[P]) => {
     const oldValue = states.get(propName);
-    if (oldValue !== value) {
+    if (oldValue !== value || typeof value === 'object') {
       states.set(propName, value);
 
       subscriptions.forEach(s => s('set', propName, value, oldValue));
