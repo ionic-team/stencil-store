@@ -36,3 +36,21 @@ export const toSubscription = <T>(
     }
   };
 };
+
+export const debounce = <T extends (...args: any) => any>(
+  fn: T,
+  ms: number
+): ((...args: Parameters<T>) => void) => {
+  let timeoutId;
+  return (...args: Parameters<T>) => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => {
+      timeoutId = null;
+      fn.apply(args);
+    }, ms);
+  };
+};
+
+export const forMs = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
