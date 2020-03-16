@@ -22,7 +22,7 @@ const cleanupElements = debounce(async (map: Map<string, any[]>) => {
   }
 }, 2_000);
 
-export const stencilSubscription = <T>({ subscribe }: Pick<ObservableMap<T>, 'subscribe'>) => {
+export const stencilSubscription = <T>({ on }: ObservableMap<T>) => {
   const elmsToUpdate = new Map<string, any[]>();
 
   if (typeof getRenderingRef !== 'function') {
@@ -31,22 +31,23 @@ export const stencilSubscription = <T>({ subscribe }: Pick<ObservableMap<T>, 'su
     return;
   }
 
-  subscribe({
-    get(propName) {
-      const elm = getRenderingRef();
-      if (elm) {
-        appendToMap(elmsToUpdate, propName as string, elm);
-      }
-    },
-    reset() {
-      elmsToUpdate.forEach(elms => elms.forEach(forceUpdate));
-    },
-    set(propName) {
-      const elements = elmsToUpdate.get(propName as string);
-      if (elements) {
-        elmsToUpdate.set(propName as string, elements.filter(forceUpdate));
-      }
-    },
+  on('get', propName => {
+    const elm = getRenderingRef();
+    if (elm) {
+      appendToMap(elmsToUpdate, propName as string, elm);
+    }
   });
-  subscribe(() => cleanupElements(elmsToUpdate));
+
+  on('set', propName => {
+    const elements = elmsToUpdate.get(propName as string);
+    if (elements) {
+      elmsToUpdate.set(propName as string, elements.filter(forceUpdate));
+    }
+    cleanupElements(elmsToUpdate);
+  });
+
+  on('reset', () => {
+    elmsToUpdate.forEach(elms => elms.forEach(forceUpdate));
+    cleanupElements(elmsToUpdate);
+  });
 };
