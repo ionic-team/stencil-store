@@ -1,3 +1,14 @@
+
+export type SetEventHandler<StoreType> = (key: keyof StoreType, newValue: any, oldValue: any) => void;
+export type GetEventHandler<StoreType> = (key: keyof StoreType) => void;
+export type ResetEventHandler = () => void;
+
+export interface EventHandlerFunction<StoreType> {
+  (eventName: 'set', callback: SetEventHandler<StoreType>): void;
+  (eventName: 'get', callback: GetEventHandler<StoreType>): void;
+  (eventName: 'reset', callback: ResetEventHandler): void;
+}
+
 export interface StoreSubscription<StoreType> {
   <KeyFromStoreType extends keyof StoreType>(
     action: 'set',
@@ -31,8 +42,9 @@ export interface ObservableMap<T> {
   state: T;
   get: Getter<T>;
   set: Setter<T>;
+  on: EventHandlerFunction<T>;
   reset: () => void;
-  subscribe(subscription: StoreSubscription<T> | StoreSubscriptionObject<T>): void;
+  subscribe(subscription: StoreSubscriptionObject<T>): void;
 }
 
 export interface ComputedReturn<T> {

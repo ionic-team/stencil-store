@@ -1,20 +1,21 @@
-import { StoreSubscription, StoreSubscriptionObject, ObservableMap } from './types';
-import { toSubscription } from './utils';
+import { EventHandlerFunction, StoreSubscriptionObject, ObservableMap, SetEventHandler, GetEventHandler, ResetEventHandler } from './types';
 
 export const createObservableMap = <T extends { [key: string]: any }>(
   defaultState?: T
 ): ObservableMap<T> => {
   let states = new Map<string, any>(Object.entries(defaultState ?? {}));
-  const subscriptions: StoreSubscription<T>[] = [];
+  const setListeners: SetEventHandler<T>[] = [];
+  const getListeners: GetEventHandler<T>[] = [];
+  const resetListeners: ResetEventHandler[] = [];
 
   const reset = (): void => {
     states = new Map<string, any>(Object.entries(defaultState ?? {}));
 
-    subscriptions.forEach(s => s('reset'));
+    resetListeners.forEach(cb => cb());
   };
 
   const get = <P extends keyof T>(propName: P & string): T[P] => {
-    subscriptions.forEach(s => s('get', propName));
+    getListeners.forEach(cb => cb(propName));
 
     return states.get(propName);
   };
@@ -24,7 +25,7 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     if (oldValue !== value || typeof value === 'object') {
       states.set(propName, value);
 
-      subscriptions.forEach(s => s('set', propName, value, oldValue));
+      setListeners.forEach(cb => cb(propName, value, oldValue));
     }
   };
 
@@ -38,8 +39,26 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     },
   });
 
-  const subscribe = (subscription: StoreSubscription<T> | StoreSubscriptionObject<T>): void => {
-    subscriptions.push(toSubscription(subscription));
+  const on: EventHandlerFunction<T> = (eventName, callback) => {
+    let listeners: any[] = setListeners;
+    if (eventName === 'get') {
+      listeners = getListeners;
+    } else if (eventName === 'reset') {
+      listeners = resetListeners;
+    }
+    listeners.push(callback);
+  }
+
+  const subscribe = (subscription: StoreSubscriptionObject<T>): void => {
+    if (subscription.set) {
+      on('set', subscription.set);
+    }
+    if (subscription.get) {
+      on('get', subscription.get);
+    }
+    if (subscription.reset) {
+      on('reset', subscription.reset);
+    }
   };
 
   return {
@@ -73,7 +92,12 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     set,
 
     /**
-     * Register a subscription that will be called whenever the user gets, sets, or
+     * Register a event listener, you can listen to `set`, `get` and `reset` events.
+     */
+    on,
+
+    /**
+     * Registers a subscription that will be called whenever the user gets, sets, or
      * resets a value.
      */
     subscribe,
