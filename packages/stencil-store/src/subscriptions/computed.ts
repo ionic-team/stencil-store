@@ -1,18 +1,14 @@
 import { ComputedReturn, ObservableMap } from '../types';
 import { appendToMap } from '../utils';
 
-export const computedSubscription = <T>({
-  get,
-  set,
-  on,
-}: ObservableMap<T>): ComputedReturn<T> => {
+export const computedSubscription = <T>({ get, set, on }: ObservableMap<T>): ComputedReturn<T> => {
   const computedStates = new Map<string, (() => void)[]>();
 
   on('reset', () => {
     computedStates.forEach(computeds => computeds.forEach(h => h()));
   });
 
-  on('set', (propName) => {
+  on('set', propName => {
     const computed = computedStates.get(propName as string);
     if (computed) {
       computed.forEach(h => h());

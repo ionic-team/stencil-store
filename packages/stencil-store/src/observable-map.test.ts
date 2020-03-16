@@ -32,7 +32,6 @@ describe('reset', () => {
     expect(state).not.toHaveProperty('hola');
   });
 
-
   test('calls reset subscriptions', () => {
     const { subscribe, reset, onChange } = createObservableMap({ hola: 'hello' });
     const subscription = jest.fn();
@@ -46,7 +45,7 @@ describe('reset', () => {
     reset();
 
     expect(subscription).toHaveBeenCalledTimes(1);
-    expect(onChangeFn).toHaveBeenCalledWith('hello')
+    expect(onChangeFn).toHaveBeenCalledWith('hello');
   });
 
   test('calls on', () => {

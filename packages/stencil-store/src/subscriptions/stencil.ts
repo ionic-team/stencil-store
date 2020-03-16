@@ -31,14 +31,14 @@ export const stencilSubscription = <T>({ on }: ObservableMap<T>) => {
     return;
   }
 
-  on('get', (propName) => {
+  on('get', propName => {
     const elm = getRenderingRef();
     if (elm) {
       appendToMap(elmsToUpdate, propName as string, elm);
     }
   });
 
-  on('set', (propName) => {
+  on('set', propName => {
     const elements = elmsToUpdate.get(propName as string);
     if (elements) {
       elmsToUpdate.set(propName as string, elements.filter(forceUpdate));

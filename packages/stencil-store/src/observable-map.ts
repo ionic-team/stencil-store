@@ -1,4 +1,12 @@
-import { OnHandler, OnChangeHandler, StoreSubscriptionObject, ObservableMap, SetEventHandler, GetEventHandler, ResetEventHandler } from './types';
+import {
+  OnHandler,
+  OnChangeHandler,
+  StoreSubscriptionObject,
+  ObservableMap,
+  SetEventHandler,
+  GetEventHandler,
+  ResetEventHandler,
+} from './types';
 
 export const createObservableMap = <T extends { [key: string]: any }>(
   defaultState?: T

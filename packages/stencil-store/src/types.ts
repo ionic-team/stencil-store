@@ -1,5 +1,8 @@
-
-export type SetEventHandler<StoreType> = (key: keyof StoreType, newValue: any, oldValue: any) => void;
+export type SetEventHandler<StoreType> = (
+  key: keyof StoreType,
+  newValue: any,
+  oldValue: any
+) => void;
 export type GetEventHandler<StoreType> = (key: keyof StoreType) => void;
 export type ResetEventHandler = () => void;
 
