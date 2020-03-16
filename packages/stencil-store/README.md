@@ -11,7 +11,7 @@ Allows to share a global state across components that triggers re-render when ne
 ```ts
 import { createStore } from "@stencil/store";
 
-const { state, subscribe } = createStore({
+const { state, onChange } = createStore({
   'clicks': 0,
   'seconds': 0,
   'sum': 0,
@@ -20,9 +20,8 @@ const { state, subscribe } = createStore({
 
 // Can be used to memoize state
 // Subscribe is only executed when 'seconds' and 'click' changes!
-subscribe(state => {
-  state.sum = state.seconds + state.clicks;
-  state.squaredClicks = state.seconds ** 2;
+onChange('clicks', value => {
+  state.squaredClicks = value ** 2;
 });
 
 export default state;

@@ -34,11 +34,26 @@ describe('reset', () => {
 
 
   test('calls reset subscriptions (object)', () => {
-    const { subscribe, reset } = createObservableMap({ hola: 'hola' });
+    const { subscribe, reset, onChange } = createObservableMap({ hola: 'hello' });
     const subscription = jest.fn();
+    const onChangeFn = jest.fn();
+
     subscribe({
       reset: subscription,
     });
+    onChange('hola', onChangeFn);
+
+    reset();
+
+    expect(subscription).toHaveBeenCalledTimes(1);
+    expect(onChangeFn).toHaveBeenCalledWith('hello')
+  });
+
+  test('calls on', () => {
+    const { reset, on } = createObservableMap({ hola: 'hello' });
+    const subscription = jest.fn();
+
+    on('reset', subscription);
 
     reset();
 
@@ -83,6 +98,18 @@ describe.each([
 
       expect(subscription).toHaveBeenCalledWith('hola');
     });
+
+    test('calls on', () => {
+      const { get, on, state } = createObservableMap({
+        hola: 'hello',
+      });
+      const subscription = jest.fn();
+      on('get', subscription);
+
+      getter(state, get, 'hola');
+
+      expect(subscription).toHaveBeenCalledWith('hola');
+    });
   }
 );
 
@@ -114,6 +141,30 @@ describe.each([
       setter(state, set, 'hola', 'ola');
 
       expect(subscription).toHaveBeenCalledWith('hola', 'ola', 'hello');
+    });
+
+    test('calls on', () => {
+      const { set, on, state } = createObservableMap({
+        hola: 'hello',
+      });
+      const subscription = jest.fn();
+      on('set', subscription);
+
+      setter(state, set, 'hola', 'ola');
+
+      expect(subscription).toHaveBeenCalledWith('hola', 'ola', 'hello');
+    });
+
+    test('calls onChange', () => {
+      const { set, onChange, state } = createObservableMap({
+        hola: 'hello',
+      });
+      const subscription = jest.fn();
+      onChange('hola', subscription);
+
+      setter(state, set, 'hola', 'ola');
+
+      expect(subscription).toHaveBeenCalledWith('ola');
     });
   }
 );

@@ -4,20 +4,19 @@ import { appendToMap } from '../utils';
 export const computedSubscription = <T>({
   get,
   set,
-  subscribe,
-}: Pick<ObservableMap<T>, 'get' | 'set' | 'subscribe'>): ComputedReturn<T> => {
+  on,
+}: ObservableMap<T>): ComputedReturn<T> => {
   const computedStates = new Map<string, (() => void)[]>();
 
-  subscribe({
-    reset() {
-      computedStates.forEach(computeds => computeds.forEach(h => h()));
-    },
-    set(propName) {
-      const computed = computedStates.get(propName as string);
-      if (computed) {
-        computed.forEach(h => h());
-      }
-    },
+  on('reset', () => {
+    computedStates.forEach(computeds => computeds.forEach(h => h()));
+  });
+
+  on('set', (propName) => {
+    const computed = computedStates.get(propName as string);
+    if (computed) {
+      computed.forEach(h => h());
+    }
   });
 
   return (gen: (states: T) => void): void => {

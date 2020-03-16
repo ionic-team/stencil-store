@@ -1,4 +1,4 @@
-import { EventHandlerFunction, StoreSubscriptionObject, ObservableMap, SetEventHandler, GetEventHandler, ResetEventHandler } from './types';
+import { OnHandler, OnChangeHandler, StoreSubscriptionObject, ObservableMap, SetEventHandler, GetEventHandler, ResetEventHandler } from './types';
 
 export const createObservableMap = <T extends { [key: string]: any }>(
   defaultState?: T
@@ -39,7 +39,7 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     },
   });
 
-  const on: EventHandlerFunction<T> = (eventName, callback) => {
+  const on: OnHandler<T> = (eventName, callback) => {
     let listeners: any[] = setListeners;
     if (eventName === 'get') {
       listeners = getListeners;
@@ -47,9 +47,20 @@ export const createObservableMap = <T extends { [key: string]: any }>(
       listeners = resetListeners;
     }
     listeners.push(callback);
-  }
+  };
 
-  const subscribe = (subscription: StoreSubscriptionObject<T>): void => {
+  const onChange: OnChangeHandler<T> = (propName, cb) => {
+    on('set', (key, newValue) => {
+      if (key === propName) {
+        cb(newValue);
+      }
+    });
+    on('reset', () => {
+      cb(defaultState[propName]);
+    });
+  };
+
+  const use = (subscription: StoreSubscriptionObject<T>): void => {
     if (subscription.set) {
       on('set', subscription.set);
     }
@@ -62,49 +73,15 @@ export const createObservableMap = <T extends { [key: string]: any }>(
   };
 
   return {
-    /**
-     * Proxied object that will detect dependencies and call
-     * the subscriptions and computed properties.
-     *
-     * If available, it will detect from which Stencil Component
-     * it was called and rerender it when the property changes.
-     */
     state,
-
-    /**
-     * Only useful if you need to support IE11.
-     *
-     * @example
-     * const { state, get } = createStore({ hola: 'hello', adios: 'goodbye' });
-     * console.log(state.hola); // If you don't need to support IE11, use this way.
-     * console.log(get('hola')); // If you need to support IE11, use this other way.
-     */
     get,
-
-    /**
-     * Only useful if you need to support IE11.
-     *
-     * @example
-     * const { state, get } = createStore({ hola: 'hello', adios: 'goodbye' });
-     * state.hola = 'ola'; // If you don't need to support IE11, use this way.
-     * set('hola', 'ola')); // If you need to support IE11, use this other way.
-     */
     set,
-
-    /**
-     * Register a event listener, you can listen to `set`, `get` and `reset` events.
-     */
     on,
-
-    /**
-     * Registers a subscription that will be called whenever the user gets, sets, or
-     * resets a value.
-     */
-    subscribe,
-
-    /**
-     * Resets the state to its original state.
-     */
+    onChange,
+    use,
     reset,
+
+    // Deprecated
+    subscribe: use,
   };
 };
