@@ -96,7 +96,7 @@ export interface ObservableMap<T> {
    * Registers a subscription that will be called whenever the user gets, sets, or
    * resets a value.
    */
-  use(plugin: StoreSubscriptionObject<T>): void;
+  use(...plugins: StoreSubscriptionObject<T>[]): void;
 
   /**
    * @deprecated Use `use()` instead.

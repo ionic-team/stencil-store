@@ -33,7 +33,7 @@ describe('reset', () => {
   });
 
 
-  test('calls reset subscriptions (object)', () => {
+  test('calls reset subscriptions', () => {
     const { subscribe, reset, onChange } = createObservableMap({ hola: 'hello' });
     const subscription = jest.fn();
     const onChangeFn = jest.fn();
@@ -85,7 +85,7 @@ describe.each([
       expect(getter(state, get, 'hola')).toBe('ola');
     });
 
-    test('calls subscriptions (object)', () => {
+    test('calls subscriptions', () => {
       const { get, subscribe, state } = createObservableMap({
         hola: 'hello',
       });
@@ -129,7 +129,7 @@ describe.each([
       expect(state.hola).toBe('ola');
     });
 
-    test('calls subscriptions (object)', () => {
+    test('calls subscriptions', () => {
       const { set, subscribe, state } = createObservableMap({
         hola: 'hello',
       });

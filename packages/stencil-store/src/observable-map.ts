@@ -41,10 +41,14 @@ export const createObservableMap = <T extends { [key: string]: any }>(
 
   const on: OnHandler<T> = (eventName, callback) => {
     let listeners: any[] = setListeners;
-    if (eventName === 'get') {
+    if (eventName === 'set') {
+      listeners = setListeners;
+    } else if (eventName === 'get') {
       listeners = getListeners;
     } else if (eventName === 'reset') {
       listeners = resetListeners;
+    } else {
+      throw new Error(`Unknown event ${eventName}`);
     }
     listeners.push(callback);
   };
@@ -60,7 +64,11 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     });
   };
 
-  const use = (subscription: StoreSubscriptionObject<T>): void => {
+  const use = (...subscriptions: StoreSubscriptionObject<T>[]): void => {
+    subscriptions.forEach(subscribe);
+  };
+
+  const subscribe = (subscription: StoreSubscriptionObject<T>): void => {
     if (subscription.set) {
       on('set', subscription.set);
     }
@@ -82,6 +90,6 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     reset,
 
     // Deprecated
-    subscribe: use,
+    subscribe,
   };
 };
