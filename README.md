@@ -1,8 +1,11 @@
 # @stencil/store
 
-Store is a simple global state library from StencilJS.
+Store is a lightweight shared state library by the [StencilJS](https://stenciljs.com/) core team. Implements a simple key/value map that efficiently re-renders components when necessary.
 
-Allows to share a global state across components that triggers re-render when necesary.
+- Lightweight
+- Zero dependencies
+- Simple API, like a reactive Map.
+- Best performance
 
 
 ## Example
