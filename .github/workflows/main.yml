@@ -20,7 +20,14 @@ jobs:
     - name: npm install, build, and test
       run: |
         npm install
-        node_modules/.bin/lerna bootstrap --ci
+        npm run build -- --ci
         npm run test.ci
+        npm link
+        cd test-app
+        npm install
+        npm link @stencil/store
+        npm run build -- --ci
+        npm test
+
       env:
         CI: true
