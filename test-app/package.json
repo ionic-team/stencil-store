@@ -18,10 +18,8 @@
     "build": "stencil build",
     "start": "stencil build --dev --watch --serve",
     "lint": "npm run lint.prettier",
-    "lint.prettier": "prettier --write 'src/**/*.ts{x,}'",
     "test": "stencil test --spec --e2e",
-    "test.ci": "npm run test && npm run test.prettier",
-    "test.prettier": "prettier --check 'src/**/*.ts{x,}' --ignore-path 'src/components.d.ts'",
+    "test.ci": "npm run test",
     "test.watch": "stencil test --spec --e2e --watchAll",
     "generate": "stencil generate"
   },
@@ -32,8 +30,7 @@
     "@types/puppeteer": "2.0.1",
     "jest": "24.9.0",
     "jest-cli": "24.9.0",
-    "puppeteer": "2.1.1",
-    "prettier": "^2.0.2"
+    "puppeteer": "2.1.1"
   },
   "license": "MIT"
 }

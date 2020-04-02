@@ -5,13 +5,13 @@ export const computedSubscription = <T>({ get, set, on }: ObservableMap<T>): Com
   const computedStates = new Map<string, (() => void)[]>();
 
   on('reset', () => {
-    computedStates.forEach(computeds => computeds.forEach(h => h()));
+    computedStates.forEach((computeds) => computeds.forEach((h) => h()));
   });
 
-  on('set', propName => {
+  on('set', (propName) => {
     const computed = computedStates.get(propName as string);
     if (computed) {
-      computed.forEach(h => h());
+      computed.forEach((h) => h());
     }
   });
 

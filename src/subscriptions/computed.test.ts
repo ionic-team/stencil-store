@@ -19,7 +19,7 @@ describe('computed', () => {
       greeting: '',
     });
 
-    computed(state => {
+    computed((state) => {
       state.greeting = `${state.hello}, ${state.name}`;
     });
 
@@ -36,10 +36,10 @@ describe('computed', () => {
     });
     const computedFromHelloAndName = jest
       .fn()
-      .mockImplementation(state => (state.greeting = `${state.hello}, ${state.name}`));
+      .mockImplementation((state) => (state.greeting = `${state.hello}, ${state.name}`));
     const computedFromNameAndAge = jest
       .fn()
-      .mockImplementation(state => (state.personInfo = `${state.name} (${state.age})`));
+      .mockImplementation((state) => (state.personInfo = `${state.name} (${state.age})`));
 
     computed(computedFromHelloAndName);
     computed(computedFromNameAndAge);
@@ -67,8 +67,8 @@ describe('computed', () => {
 
   test('reset calls computed properties', () => {
     const { computed, reset } = createMapWithComputed({ hola: 'hola' });
-    const firstComputed = jest.fn().mockImplementation(s => s.hola);
-    const secondComputed = jest.fn().mockImplementation(s => s.hola);
+    const firstComputed = jest.fn().mockImplementation((s) => s.hola);
+    const secondComputed = jest.fn().mockImplementation((s) => s.hola);
     computed(firstComputed);
     computed(secondComputed);
 
@@ -91,7 +91,7 @@ describe('computed', () => {
         hola: 'hello',
         ru: '',
       });
-      computed(states => (states.ru = `${states.hola}, ${states.hola}, ${states.hola}`));
+      computed((states) => (states.ru = `${states.hola}, ${states.hola}, ${states.hola}`));
 
       expect(getter(state, get, 'ru')).toBe('hello, hello, hello');
     }

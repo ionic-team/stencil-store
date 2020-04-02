@@ -19,11 +19,11 @@ export const createObservableMap = <T extends { [key: string]: any }>(
   const reset = (): void => {
     states = new Map<string, any>(Object.entries(defaultState ?? {}));
 
-    resetListeners.forEach(cb => cb());
+    resetListeners.forEach((cb) => cb());
   };
 
   const get = <P extends keyof T>(propName: P & string): T[P] => {
-    getListeners.forEach(cb => cb(propName));
+    getListeners.forEach((cb) => cb(propName));
 
     return states.get(propName);
   };
@@ -33,7 +33,7 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     if (oldValue !== value || typeof value === 'object') {
       states.set(propName, value);
 
-      setListeners.forEach(cb => cb(propName, value, oldValue));
+      setListeners.forEach((cb) => cb(propName, value, oldValue));
     }
   };
 

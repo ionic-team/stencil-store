@@ -23,4 +23,5 @@ export const debounce = <T extends (...args: any) => any>(
   };
 };
 
-export const forMs = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
+export const forMs = (ms: number): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve, ms));
