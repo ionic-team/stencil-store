@@ -6,7 +6,7 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && tsc -p . & npm run rollup",
+    "build": "rm -rf dist && tsc -p . && npm run rollup",
     "lint.prettier": "prettier --write 'src/**/*.ts'",
     "release": "np",
     "rollup": "rollup -c rollup.config.js",

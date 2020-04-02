@@ -15,13 +15,13 @@
     "loader/"
   ],
   "scripts": {
-    "build": "stencil build --docs",
+    "build": "stencil build",
     "start": "stencil build --dev --watch --serve",
     "lint": "npm run lint.prettier",
-    "lint.prettier": "node_modules/.bin/prettier --write 'src/**/*.ts{x,}'",
+    "lint.prettier": "prettier --write 'src/**/*.ts{x,}'",
     "test": "stencil test --spec --e2e",
     "test.ci": "npm run test && npm run test.prettier",
-    "test.prettier": "node_modules/.bin/prettier --check 'src/**/*.ts{x,}' --ignore-path 'src/components.d.ts'",
+    "test.prettier": "prettier --check 'src/**/*.ts{x,}' --ignore-path 'src/components.d.ts'",
     "test.watch": "stencil test --spec --e2e --watchAll",
     "generate": "stencil generate"
   },
