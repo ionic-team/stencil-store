@@ -13,6 +13,9 @@ export namespace Components {
     interface DisplayStore {
         "storeKey": "hello" | "goodbye";
     }
+    interface SimpleStore {
+        "next": () => Promise<void>;
+    }
 }
 declare global {
     interface HTMLChangeStoreElement extends Components.ChangeStore, HTMLStencilElement {
@@ -27,9 +30,16 @@ declare global {
         prototype: HTMLDisplayStoreElement;
         new (): HTMLDisplayStoreElement;
     };
+    interface HTMLSimpleStoreElement extends Components.SimpleStore, HTMLStencilElement {
+    }
+    var HTMLSimpleStoreElement: {
+        prototype: HTMLSimpleStoreElement;
+        new (): HTMLSimpleStoreElement;
+    };
     interface HTMLElementTagNameMap {
         "change-store": HTMLChangeStoreElement;
         "display-store": HTMLDisplayStoreElement;
+        "simple-store": HTMLSimpleStoreElement;
     }
 }
 declare namespace LocalJSX {
@@ -40,9 +50,12 @@ declare namespace LocalJSX {
     interface DisplayStore {
         "storeKey"?: "hello" | "goodbye";
     }
+    interface SimpleStore {
+    }
     interface IntrinsicElements {
         "change-store": ChangeStore;
         "display-store": DisplayStore;
+        "simple-store": SimpleStore;
     }
 }
 export { LocalJSX as JSX };
@@ -51,6 +64,7 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "change-store": LocalJSX.ChangeStore & JSXBase.HTMLAttributes<HTMLChangeStoreElement>;
             "display-store": LocalJSX.DisplayStore & JSXBase.HTMLAttributes<HTMLDisplayStoreElement>;
+            "simple-store": LocalJSX.SimpleStore & JSXBase.HTMLAttributes<HTMLSimpleStoreElement>;
         }
     }
 }

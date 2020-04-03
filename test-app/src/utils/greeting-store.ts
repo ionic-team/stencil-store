@@ -6,3 +6,4 @@ const store = createStore({
 });
 
 export const state = store.state;
+export const reset = store.reset;

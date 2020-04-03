@@ -19,6 +19,7 @@
     "start": "stencil build --dev --watch --serve",
     "lint": "npm run lint.prettier",
     "test": "stencil test --spec --e2e",
+    "test.spec": "stencil test --spec",
     "test.ci": "npm run test",
     "test.watch": "stencil test --spec --e2e --watchAll",
     "generate": "stencil generate"
