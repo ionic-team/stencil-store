@@ -16,17 +16,6 @@ export interface OnChangeHandler<StoreType> {
   <Key extends keyof StoreType>(propName: Key, cb: (newValue: StoreType[Key]) => void): void;
 }
 
-export interface StoreSubscription<StoreType> {
-  <KeyFromStoreType extends keyof StoreType>(
-    action: 'set',
-    key: KeyFromStoreType,
-    newValue: StoreType[KeyFromStoreType],
-    oldValue: StoreType[KeyFromStoreType]
-  ): void;
-  <KeyFromStoreType extends keyof StoreType>(action: 'get', key: KeyFromStoreType): void;
-  (action: 'reset'): void;
-}
-
 export interface StoreSubscriptionObject<StoreType> {
   get?<KeyFromStoreType extends keyof StoreType>(key: KeyFromStoreType): void;
   set?<KeyFromStoreType extends keyof StoreType>(
@@ -52,6 +41,10 @@ export interface ObservableMap<T> {
    *
    * If available, it will detect from which Stencil Component
    * it was called and rerender it when the property changes.
+   *
+   * Note that state uses Proxy under the hood, you can't use this feature
+   * if you want to support IE11.
+   *
    */
   state: T;
 
@@ -100,13 +93,4 @@ export interface ObservableMap<T> {
    * resets a value.
    */
   use(...plugins: StoreSubscriptionObject<T>[]): void;
-
-  /**
-   * @deprecated Use `use()` instead.
-   */
-  subscribe(subscription: StoreSubscriptionObject<T>): void;
-}
-
-export interface ComputedReturn<T> {
-  (gen: (states: T) => void): void;
 }

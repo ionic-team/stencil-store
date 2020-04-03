@@ -6,7 +6,6 @@ export const createStore = <T extends { [key: string]: any }>(
   defaultState?: T
 ): ObservableMap<T> => {
   const map = createObservableMap(defaultState);
-
   stencilSubscription(map);
   return map;
 };

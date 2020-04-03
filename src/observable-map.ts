@@ -96,8 +96,5 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     onChange,
     use,
     reset,
-
-    // Deprecated
-    subscribe,
   };
 };
