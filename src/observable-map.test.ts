@@ -68,7 +68,6 @@ describe.each([
       expect(getter(state, get, 'hola')).toBe('ola');
     });
 
-
     test('calls on', () => {
       const { get, on, state } = createObservableMap({
         hola: 'hello',
