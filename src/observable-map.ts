@@ -37,7 +37,7 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     }
   };
 
-  const state = (window.Proxy === undefined
+  const state = (typeof Proxy === 'undefined'
     ? {}
     : new Proxy(defaultState, {
         get(_, propName) {
