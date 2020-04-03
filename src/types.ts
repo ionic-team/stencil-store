@@ -42,8 +42,8 @@ export interface ObservableMap<T> {
    * If available, it will detect from which Stencil Component
    * it was called and rerender it when the property changes.
    *
-   * Note that state uses Proxy under the hood, you can't use this feature
-   * if you want to support IE11.
+   * Note: Proxy objects are not supported by IE11 (not even with a polyfill)
+   * so you need to use the store.get and store.set methods of the API if you wish to support IE11.
    *
    */
   state: T;
