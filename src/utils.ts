@@ -11,13 +11,13 @@ export const debounce = <T extends (...args: any) => any>(
   fn: T,
   ms: number
 ): ((...args: Parameters<T>) => void) => {
-  let timeoutId;
+  let timeoutId: number;
   return (...args: Parameters<T>) => {
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
     timeoutId = setTimeout(() => {
-      timeoutId = null;
+      timeoutId = 0;
       fn.apply(null, args);
     }, ms);
   };

@@ -14,10 +14,8 @@ import { appendToMap, debounce } from '../utils';
 const isConnected = (maybeElement: any) =>
   !('isConnected' in maybeElement) || maybeElement.isConnected;
 
-const cleanupElements = debounce(async (map: Map<string, any[]>) => {
-  const keys = Array.from(map.keys());
-
-  for (let key of keys) {
+const cleanupElements = debounce((map: Map<string, any[]>) => {
+  for (let key of map.keys()) {
     map.set(key, map.get(key).filter(isConnected));
   }
 }, 2_000);
@@ -25,29 +23,28 @@ const cleanupElements = debounce(async (map: Map<string, any[]>) => {
 export const stencilSubscription = <T>({ on }: ObservableMap<T>) => {
   const elmsToUpdate = new Map<string, any[]>();
 
-  if (typeof getRenderingRef !== 'function') {
+  if (typeof getRenderingRef === 'function') {
     // If we are not in a stencil project, we do nothing.
     // This function is not really exported by @stencil/core.
-    return;
+
+    on('get', (propName) => {
+      const elm = getRenderingRef();
+      if (elm) {
+        appendToMap(elmsToUpdate, propName as string, elm);
+      }
+    });
+
+    on('set', (propName) => {
+      const elements = elmsToUpdate.get(propName as string);
+      if (elements) {
+        elmsToUpdate.set(propName as string, elements.filter(forceUpdate));
+      }
+      cleanupElements(elmsToUpdate);
+    });
+
+    on('reset', () => {
+      elmsToUpdate.forEach((elms) => elms.forEach(forceUpdate));
+      cleanupElements(elmsToUpdate);
+    });
   }
-
-  on('get', (propName) => {
-    const elm = getRenderingRef();
-    if (elm) {
-      appendToMap(elmsToUpdate, propName as string, elm);
-    }
-  });
-
-  on('set', (propName) => {
-    const elements = elmsToUpdate.get(propName as string);
-    if (elements) {
-      elmsToUpdate.set(propName as string, elements.filter(forceUpdate));
-    }
-    cleanupElements(elmsToUpdate);
-  });
-
-  on('reset', () => {
-    elmsToUpdate.forEach((elms) => elms.forEach(forceUpdate));
-    cleanupElements(elmsToUpdate);
-  });
 };
