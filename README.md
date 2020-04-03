@@ -112,3 +112,17 @@ Reset the store to its initial state.
 #### `store.use(...subscriptions)`
 
 Use the given subscriptions in the store. A subscription is an object that defines one or more of the properties `get`, `set` or `reset`.
+
+
+## Testing
+
+Like any global state library, state should be reset between each spec test.
+Use the `reset()` API in the `beforeEach` hook.
+
+```ts
+import store from '../store';
+
+beforeEach(() => {
+  store.reset();
+});
+```
