@@ -37,15 +37,17 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     }
   };
 
-  const state = ((window.Proxy === undefined) ? {} : new Proxy(defaultState, {
-    get(_, propName) {
-      return get(propName as any);
-    },
-    set(_, propName, value) {
-      set(propName as any, value);
-      return true;
-    },
-  })) as T;
+  const state = (window.Proxy === undefined
+    ? {}
+    : new Proxy(defaultState, {
+        get(_, propName) {
+          return get(propName as any);
+        },
+        set(_, propName, value) {
+          set(propName as any, value);
+          return true;
+        },
+      })) as T;
 
   const on: OnHandler<T> = (eventName, callback) => {
     let listeners: any[] = setListeners;
@@ -96,8 +98,5 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     onChange,
     use,
     reset,
-
-    // Deprecated
-    subscribe,
   };
 };
