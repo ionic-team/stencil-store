@@ -58,7 +58,7 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     } else if (eventName === 'reset') {
       listeners = resetListeners;
     } else {
-      throw new Error(`Unknown event ${eventName}`);
+      throw new Error('Unknown event ' + eventName);
     }
     listeners.push(callback);
   };
@@ -69,14 +69,11 @@ export const createObservableMap = <T extends { [key: string]: any }>(
         cb(newValue);
       }
     });
-    on('reset', () => {
-      cb(defaultState[propName]);
-    });
+    on('reset', () => cb(defaultState[propName]));
   };
 
-  const use = (...subscriptions: StoreSubscriptionObject<T>[]): void => {
+  const use = (...subscriptions: StoreSubscriptionObject<T>[]): void =>
     subscriptions.forEach(subscribe);
-  };
 
   const subscribe = (subscription: StoreSubscriptionObject<T>): void => {
     if (subscription.set) {
