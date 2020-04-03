@@ -12,7 +12,7 @@ Store is a lightweight shared state library by the [StencilJS](https://stenciljs
 ## Installation
 
 ```
-npm install @stencil/store
+npm install @stencil/store --save-dev
 ```
 
 ## Example
@@ -39,7 +39,7 @@ export default state;
 
 ```tsx
 import { Component, h } from '@stencil/core';
-import store from '../store';
+import state from '../store';
 
 @Component({
   tag: 'app-profile',
@@ -47,7 +47,7 @@ import store from '../store';
 export class AppProfile {
 
   componentWillLoad() {
-    setInterval(() => store.seconds++, 1000);
+    setInterval(() => state.seconds++, 1000);
   }
 
   render() {
@@ -56,9 +56,9 @@ export class AppProfile {
         <p>
           <MyGlobalCounter />
           <p>
-            Seconds: {store.seconds}
+            Seconds: {state.seconds}
             <br />
-            Squared Clicks: {store.squaredClicks}
+            Squared Clicks: {state.squaredClicks}
           </p>
         </p>
       </div>
@@ -68,8 +68,8 @@ export class AppProfile {
 
 const MyGlobalCounter = () => {
   return (
-    <button onClick={() => store.clicks++}>
-      {store.clicks}
+    <button onClick={() => state.clicks++}>
+      {state.clicks}
     </button>
   );
 };
