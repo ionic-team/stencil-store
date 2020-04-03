@@ -12,7 +12,7 @@ Store is a lightweight shared state library by the [StencilJS](https://stenciljs
 ## Installation
 
 ```
-npm install @stencil/core
+npm install @stencil/store
 ```
 
 ## Example
