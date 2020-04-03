@@ -7,6 +7,7 @@ import {
   GetEventHandler,
   ResetEventHandler,
 } from './types';
+import { Build } from '@stencil/core';
 
 export const createObservableMap = <T extends { [key: string]: any }>(
   defaultState?: T
@@ -50,14 +51,14 @@ export const createObservableMap = <T extends { [key: string]: any }>(
       })) as T;
 
   const on: OnHandler<T> = (eventName, callback) => {
-    let listeners: any[] = setListeners;
+    let listeners: any[];
     if (eventName === 'set') {
       listeners = setListeners;
     } else if (eventName === 'get') {
       listeners = getListeners;
     } else if (eventName === 'reset') {
       listeners = resetListeners;
-    } else {
+    } else if (Build.isDev) {
       throw new Error('Unknown event ' + eventName);
     }
     listeners.push(callback);
@@ -73,19 +74,17 @@ export const createObservableMap = <T extends { [key: string]: any }>(
   };
 
   const use = (...subscriptions: StoreSubscriptionObject<T>[]): void =>
-    subscriptions.forEach(subscribe);
-
-  const subscribe = (subscription: StoreSubscriptionObject<T>): void => {
-    if (subscription.set) {
-      on('set', subscription.set);
-    }
-    if (subscription.get) {
-      on('get', subscription.get);
-    }
-    if (subscription.reset) {
-      on('reset', subscription.reset);
-    }
-  };
+    subscriptions.forEach((subscription: StoreSubscriptionObject<T>): void => {
+      if (subscription.set) {
+        on('set', subscription.set);
+      }
+      if (subscription.get) {
+        on('get', subscription.get);
+      }
+      if (subscription.reset) {
+        on('reset', subscription.reset);
+      }
+    });
 
   return {
     state,

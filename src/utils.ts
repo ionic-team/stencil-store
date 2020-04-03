@@ -7,21 +7,18 @@ export const appendToMap = <K, V>(map: Map<K, V[]>, propName: K, value: V) => {
   }
 };
 
-export const debounce = <T extends (...args: any) => any>(
+export const debounce = <T extends (...args: any[]) => any>(
   fn: T,
   ms: number
 ): ((...args: Parameters<T>) => void) => {
-  let timeoutId: number;
+  let timeoutId: any;
   return (...args: Parameters<T>) => {
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
     timeoutId = setTimeout(() => {
       timeoutId = 0;
-      fn.apply(null, args);
+      fn(...args);
     }, ms);
   };
 };
-
-export const forMs = (ms: number): Promise<void> =>
-  new Promise((resolve) => setTimeout(resolve, ms));
