@@ -8,16 +8,39 @@ describe('some-store', () => {
       components: [SimpleStore],
       html: `<simple-store></simple-store>`
     });
-    expect(root).toEqualHtml('<simple-store>hola</simple-store>');
+    expect(root).toEqualHtml(`
+      <simple-store>
+        hola
+        <span>0</span>
+        <span>0</span>
+      </simple-store>
+    `);
     await root.next();
     await waitForChanges();
-    expect(root).toEqualHtml('<simple-store>0</simple-store>');
-
+    expect(root).toEqualHtml(`
+      <simple-store>
+        hola
+        <span>1</span>
+        <span>1</span>
+      </simple-store>
+    `);
     await root.next();
     await waitForChanges();
-    expect(root).toEqualHtml('<simple-store>1</simple-store>');
+    expect(root).toEqualHtml(`
+      <simple-store>
+        hola
+        <span>2</span>
+        <span>4</span>
+      </simple-store>
+    `);
     reset();
     await waitForChanges();
-    expect(root).toEqualHtml('<simple-store>hola</simple-store>');
+    expect(root).toEqualHtml(`
+      <simple-store>
+        hola
+        <span>0</span>
+        <span>0</span>
+      </simple-store>
+    `);
   });
 });

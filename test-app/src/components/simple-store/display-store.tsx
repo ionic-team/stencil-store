@@ -11,13 +11,15 @@ export class SimpleStore {
 
   @Method()
   async next() {
-    state.hello = `${this.count++}`;
+    state.clicks++;
   }
 
   render() {
     return (
       <Host>
         {state.hello}
+        <span>{state.clicks}</span>
+        <span>{state.squaredClicks}</span>
       </Host>
     );
   }
