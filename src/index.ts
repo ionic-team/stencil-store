@@ -1,4 +1,4 @@
 export { createStore } from './store';
 
 // Types
-export { ObservableMap, StoreSubscriptionObject } from './types';
+export { ObservableMap, Subscription } from './types';

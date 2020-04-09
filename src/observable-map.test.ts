@@ -128,8 +128,8 @@ describe.each([
       state.hello = 'hola';
       expect(Object.keys(state)).toEqual(['hello']);
       expect(Object.getOwnPropertyNames(state)).toEqual(['hello']);
-      const copy = {...state};
-      expect(copy).toEqual({hello: 'hola'});
+      const copy = { ...state };
+      expect(copy).toEqual({ hello: 'hola' });
     });
 
     test('in operator', () => {

@@ -1,30 +1,23 @@
-import {
-  OnHandler,
-  OnChangeHandler,
-  StoreSubscriptionObject,
-  ObservableMap,
-  SetEventHandler,
-  GetEventHandler,
-  ResetEventHandler,
-} from './types';
-import { Build } from '@stencil/core';
+import { OnHandler, OnChangeHandler, Subscription, ObservableMap, Handlers } from './types';
 
 export const createObservableMap = <T extends { [key: string]: any }>(
   defaultState?: T
 ): ObservableMap<T> => {
   let states = new Map<string, any>(Object.entries(defaultState ?? {}));
-  const setListeners: SetEventHandler<T>[] = [];
-  const getListeners: GetEventHandler<T>[] = [];
-  const resetListeners: ResetEventHandler[] = [];
+  const handlers: Handlers<T> = {
+    get: [],
+    set: [],
+    reset: [],
+  };
 
   const reset = (): void => {
     states = new Map<string, any>(Object.entries(defaultState ?? {}));
 
-    resetListeners.forEach((cb) => cb());
+    handlers.reset.forEach((cb) => cb());
   };
 
   const get = <P extends keyof T>(propName: P & string): T[P] => {
-    getListeners.forEach((cb) => cb(propName));
+    handlers.get.forEach((cb) => cb(propName));
 
     return states.get(propName);
   };
@@ -34,7 +27,7 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     if (oldValue !== value || typeof value === 'object') {
       states.set(propName, value);
 
-      setListeners.forEach((cb) => cb(propName, value, oldValue));
+      handlers.set.forEach((cb) => cb(propName, value, oldValue));
     }
   };
 
@@ -45,7 +38,7 @@ export const createObservableMap = <T extends { [key: string]: any }>(
           return get(propName as any);
         },
         ownKeys(_) {
-          return Array.from(states.keys())
+          return Array.from(states.keys());
         },
         getOwnPropertyDescriptor() {
           return {
@@ -53,7 +46,7 @@ export const createObservableMap = <T extends { [key: string]: any }>(
             configurable: true,
           };
         },
-        has(_,  propName) {
+        has(_, propName) {
           return states.has(propName as any);
         },
         set(_, propName, value) {
@@ -63,17 +56,7 @@ export const createObservableMap = <T extends { [key: string]: any }>(
       })) as T;
 
   const on: OnHandler<T> = (eventName, callback) => {
-    let listeners: any[];
-    if (eventName === 'set') {
-      listeners = setListeners;
-    } else if (eventName === 'get') {
-      listeners = getListeners;
-    } else if (eventName === 'reset') {
-      listeners = resetListeners;
-    } else if (Build.isDev) {
-      throw new Error('Unknown event ' + eventName);
-    }
-    listeners.push(callback);
+    handlers[eventName].push(callback);
   };
 
   const onChange: OnChangeHandler<T> = (propName, cb) => {
@@ -85,8 +68,8 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     on('reset', () => cb(defaultState[propName]));
   };
 
-  const use = (...subscriptions: StoreSubscriptionObject<T>[]): void =>
-    subscriptions.forEach((subscription: StoreSubscriptionObject<T>): void => {
+  const use = (...subscriptions: Subscription<T>[]): void =>
+    subscriptions.forEach((subscription) => {
       if (subscription.set) {
         on('set', subscription.set);
       }

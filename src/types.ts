@@ -1,3 +1,9 @@
+export interface Handlers<T> {
+  set: SetEventHandler<T>[];
+  get: GetEventHandler<T>[];
+  reset: ResetEventHandler[];
+}
+
 export type SetEventHandler<StoreType> = (
   key: keyof StoreType,
   newValue: any,
@@ -16,7 +22,7 @@ export interface OnChangeHandler<StoreType> {
   <Key extends keyof StoreType>(propName: Key, cb: (newValue: StoreType[Key]) => void): void;
 }
 
-export interface StoreSubscriptionObject<StoreType> {
+export interface Subscription<StoreType> {
   get?<KeyFromStoreType extends keyof StoreType>(key: KeyFromStoreType): void;
   set?<KeyFromStoreType extends keyof StoreType>(
     key: KeyFromStoreType,
@@ -92,5 +98,5 @@ export interface ObservableMap<T> {
    * Registers a subscription that will be called whenever the user gets, sets, or
    * resets a value.
    */
-  use(...plugins: StoreSubscriptionObject<T>[]): void;
+  use(...plugins: Subscription<T>[]): void;
 }
