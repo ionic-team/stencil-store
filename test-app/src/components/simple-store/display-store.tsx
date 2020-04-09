@@ -7,8 +7,6 @@ import { state } from '../../utils/greeting-store';
 })
 export class SimpleStore {
 
-  private count = 0;
-
   @Method()
   async next() {
     state.clicks++;
