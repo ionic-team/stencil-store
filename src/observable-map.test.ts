@@ -121,5 +121,22 @@ describe.each([
 
       expect(subscription).toHaveBeenCalledWith('ola');
     });
+
+    test('enumerable keys', () => {
+      const { state } = createObservableMap<any>({});
+      expect(Object.keys(state)).toEqual([]);
+      state.hello = 'hola';
+      expect(Object.keys(state)).toEqual(['hello']);
+      expect(Object.getOwnPropertyNames(state)).toEqual(['hello']);
+      const copy = {...state};
+      expect(copy).toEqual({hello: 'hola'});
+    });
+
+    test('in operator', () => {
+      const { state } = createObservableMap<any>({});
+      expect('hello' in state).toBe(false);
+      state.hello = 'hola';
+      expect('hello' in state).toBe(true);
+    });
   }
 );
