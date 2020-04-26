@@ -57,15 +57,22 @@ export const createObservableMap = <T extends { [key: string]: any }>(
 
   const on: OnHandler<T> = (eventName, callback) => {
     handlers[eventName].push(callback);
+    return () => {
+      removeFromArray(handlers[eventName], callback);
+    };
   };
 
   const onChange: OnChangeHandler<T> = (propName, cb) => {
-    on('set', (key, newValue) => {
+    const unSet = on('set', (key, newValue) => {
       if (key === propName) {
         cb(newValue);
       }
     });
-    on('reset', () => cb(defaultState[propName]));
+    const unReset = on('reset', () => cb(defaultState[propName]));
+    return () => {
+      unSet();
+      unReset();
+    };
   };
 
   const use = (...subscriptions: Subscription<T>[]): void =>
@@ -90,4 +97,12 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     use,
     reset,
   };
+};
+
+const removeFromArray = (array: any[], item: any) => {
+  const index = array.indexOf(item);
+  if (index >= 0) {
+    array[index] = array[array.length - 1];
+    array.length--;
+  }
 };

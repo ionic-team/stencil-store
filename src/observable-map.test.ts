@@ -140,3 +140,46 @@ describe.each([
     });
   }
 );
+
+test('unregister events', () => {
+  const { reset, state, on, onChange } = createObservableMap({
+    hola: 'hola',
+    name: 'Sergio',
+  });
+  const SET = jest.fn();
+  const GET = jest.fn();
+  const RESET = jest.fn();
+  const CHANGE = jest.fn();
+
+  const unset = on('set', SET);
+  const unget = on('get', GET);
+  const unreset = on('reset', RESET);
+  const unChange = onChange('hola', CHANGE);
+
+  state.hola = 'hola2';
+  state.name = 'hola2';
+  expect(SET).toHaveBeenCalledTimes(2);
+  unset();
+  state.hola = 'hola3';
+  expect(SET).toHaveBeenCalledTimes(2);
+
+  state.hola;
+  state.name;
+  expect(GET).toHaveBeenCalledTimes(2);
+  unget();
+  state.name;
+  expect(GET).toHaveBeenCalledTimes(2);
+
+  reset();
+  reset();
+  expect(RESET).toHaveBeenCalledTimes(2);
+  unreset();
+  reset();
+  expect(RESET).toHaveBeenCalledTimes(2);
+
+  expect(CHANGE).toHaveBeenCalledTimes(5);
+  unChange();
+  reset();
+  state.hola = 'hola';
+  expect(CHANGE).toHaveBeenCalledTimes(5);
+});
