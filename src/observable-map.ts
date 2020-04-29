@@ -1,7 +1,8 @@
 import { OnHandler, OnChangeHandler, Subscription, ObservableMap, Handlers } from './types';
 
 export const createObservableMap = <T extends { [key: string]: any }>(
-  defaultState?: T
+  defaultState?: T,
+  shouldUpdate: (newV: any, oldValue, prop: keyof T) => boolean = (a, b) => a !== b
 ): ObservableMap<T> => {
   let states = new Map<string, any>(Object.entries(defaultState ?? {}));
   const handlers: Handlers<T> = {
@@ -32,7 +33,7 @@ export const createObservableMap = <T extends { [key: string]: any }>(
 
   const set = <P extends keyof T>(propName: P & string, value: T[P]) => {
     const oldValue = states.get(propName);
-    if (oldValue !== value || typeof value === 'object') {
+    if (shouldUpdate(value, oldValue, propName)) {
       states.set(propName, value);
 
       handlers.set.forEach((cb) => cb(propName, value, oldValue));
