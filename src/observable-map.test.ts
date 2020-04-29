@@ -213,10 +213,13 @@ test('default change detector', () => {
 });
 
 test('custom change detector, values', () => {
-  const comparer = jest.fn((a, b) => a!==b);
-  const store = createObservableMap({
-    str: 'hola',
-  }, comparer);
+  const comparer = jest.fn((a, b) => a !== b);
+  const store = createObservableMap(
+    {
+      str: 'hola',
+    },
+    comparer
+  );
   store.state.str = 'hola';
   expect(comparer).toBeCalledWith('hola', 'hola', 'str');
   store.state.str = 'hola2';
@@ -226,9 +229,12 @@ test('custom change detector, values', () => {
 });
 
 test('custom change detector, prevent all mutations', () => {
-  const store = createObservableMap({
-    str: 'hola',
-  }, () => false);
+  const store = createObservableMap(
+    {
+      str: 'hola',
+    },
+    () => false
+  );
   const SET = jest.fn();
   store.on('set', SET);
   store.state.str = 'hola';

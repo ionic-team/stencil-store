@@ -2,7 +2,7 @@ import { OnHandler, OnChangeHandler, Subscription, ObservableMap, Handlers } fro
 
 export const createObservableMap = <T extends { [key: string]: any }>(
   defaultState?: T,
-  shouldUpdate: (newV: any, oldValue, prop: keyof T) => boolean = (a,b) => a!==b
+  shouldUpdate: (newV: any, oldValue, prop: keyof T) => boolean = (a, b) => a !== b
 ): ObservableMap<T> => {
   let states = new Map<string, any>(Object.entries(defaultState ?? {}));
   const handlers: Handlers<T> = {
