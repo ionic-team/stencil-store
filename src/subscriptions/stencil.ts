@@ -20,30 +20,16 @@ const cleanupElements = debounce((map: Map<string, any[]>) => {
   }
 }, 2_000);
 
-/**
- * Same as forceUpdate from @stencil/core but catches
- * any errors thrown and return false.
- *
- * This was added because in tests calling reset to the
- * same store in different test cases was raising an error
- * from forceUpdate.
- *
- * This feels like a workaround though.
- */
-const safeForceUpdate = (ref) => {
-  try {
-    return forceUpdate(ref);
-  } catch {
-    return false;
-  }
-};
-
 export const stencilSubscription = <T>({ on }: ObservableMap<T>) => {
   const elmsToUpdate = new Map<string, any[]>();
 
   if (typeof getRenderingRef === 'function') {
     // If we are not in a stencil project, we do nothing.
     // This function is not really exported by @stencil/core.
+
+    on('dispose', () => {
+      elmsToUpdate.clear();
+    });
 
     on('get', (propName) => {
       const elm = getRenderingRef();
@@ -55,13 +41,13 @@ export const stencilSubscription = <T>({ on }: ObservableMap<T>) => {
     on('set', (propName) => {
       const elements = elmsToUpdate.get(propName as string);
       if (elements) {
-        elmsToUpdate.set(propName as string, elements.filter(safeForceUpdate));
+        elmsToUpdate.set(propName as string, elements.filter(forceUpdate));
       }
       cleanupElements(elmsToUpdate);
     });
 
     on('reset', () => {
-      elmsToUpdate.forEach((elms) => elms.forEach(safeForceUpdate));
+      elmsToUpdate.forEach((elms) => elms.forEach(forceUpdate));
       cleanupElements(elmsToUpdate);
     });
   }

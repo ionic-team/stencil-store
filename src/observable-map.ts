@@ -5,6 +5,7 @@ export const createObservableMap = <T extends { [key: string]: any }>(
 ): ObservableMap<T> => {
   let states = new Map<string, any>(Object.entries(defaultState ?? {}));
   const handlers: Handlers<T> = {
+    dispose: [],
     get: [],
     set: [],
     reset: [],
@@ -14,6 +15,13 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     states = new Map<string, any>(Object.entries(defaultState ?? {}));
 
     handlers.reset.forEach((cb) => cb());
+  };
+
+  const dispose = (): void => {
+    // Call first dispose as resetting the state would
+    // cause less updates ;)
+    handlers.dispose.forEach((cb) => cb());
+    reset();
   };
 
   const get = <P extends keyof T>(propName: P & string): T[P] => {
@@ -95,6 +103,7 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     on,
     onChange,
     use,
+    dispose,
     reset,
   };
 };

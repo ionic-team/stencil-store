@@ -1,7 +1,8 @@
 export interface Handlers<T> {
-  set: SetEventHandler<T>[];
+  dispose: DisposeEventHandler[];
   get: GetEventHandler<T>[];
   reset: ResetEventHandler[];
+  set: SetEventHandler<T>[];
 }
 
 export type SetEventHandler<StoreType> = (
@@ -11,10 +12,12 @@ export type SetEventHandler<StoreType> = (
 ) => void;
 export type GetEventHandler<StoreType> = (key: keyof StoreType) => void;
 export type ResetEventHandler = () => void;
+export type DisposeEventHandler = () => void;
 
 export interface OnHandler<StoreType> {
   (eventName: 'set', callback: SetEventHandler<StoreType>): () => void;
   (eventName: 'get', callback: GetEventHandler<StoreType>): () => void;
+  (eventName: 'dispose', callback: DisposeEventHandler): () => void;
   (eventName: 'reset', callback: ResetEventHandler): () => void;
 }
 
@@ -88,6 +91,15 @@ export interface ObservableMap<T> {
    * Easily listen for value changes of the specified key.
    */
   onChange: OnChangeHandler<T>;
+
+  /**
+   * Resets the state to its original state and
+   * signals a dispose event to all the plugins.
+   *
+   * This method is intended for plugins to reset
+   * all their internal state between tests.
+   */
+  dispose(): void;
 
   /**
    * Resets the state to its original state.
