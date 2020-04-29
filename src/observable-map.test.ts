@@ -199,3 +199,41 @@ test('unregister events', () => {
   state.hola = 'hola';
   expect(CHANGE).toHaveBeenCalledTimes(5);
 });
+
+test('default change detector', () => {
+  const store = createObservableMap({
+    str: 'hola',
+  });
+  const SET = jest.fn();
+  store.on('set', SET);
+  store.state.str = 'hola';
+  expect(SET).not.toBeCalled();
+  store.state.str = 'hola2';
+  expect(SET).toBeCalledWith('str', 'hola2', 'hola');
+});
+
+test('custom change detector, values', () => {
+  const comparer = jest.fn((a, b) => a!==b);
+  const store = createObservableMap({
+    str: 'hola',
+  }, comparer);
+  store.state.str = 'hola';
+  expect(comparer).toBeCalledWith('hola', 'hola', 'str');
+  store.state.str = 'hola2';
+  expect(comparer).toBeCalledWith('hola2', 'hola', 'str');
+  store.state.str = 'hola3';
+  expect(comparer).toBeCalledWith('hola3', 'hola2', 'str');
+});
+
+test('custom change detector, prevent all mutations', () => {
+  const store = createObservableMap({
+    str: 'hola',
+  }, () => false);
+  const SET = jest.fn();
+  store.on('set', SET);
+  store.state.str = 'hola';
+  expect(SET).not.toBeCalled();
+  store.state.str = 'hola2';
+  expect(SET).not.toBeCalled();
+  expect(store.state.str).toEqual('hola');
+});
