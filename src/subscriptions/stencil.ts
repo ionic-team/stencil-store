@@ -27,6 +27,10 @@ export const stencilSubscription = <T>({ on }: ObservableMap<T>) => {
     // If we are not in a stencil project, we do nothing.
     // This function is not really exported by @stencil/core.
 
+    on('dispose', () => {
+      elmsToUpdate.clear();
+    });
+
     on('get', (propName) => {
       const elm = getRenderingRef();
       if (elm) {

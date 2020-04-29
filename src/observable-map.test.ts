@@ -1,8 +1,11 @@
 import { createObservableMap } from './observable-map';
 
-describe('reset', () => {
+describe.each([
+  ['reset', 'reset'],
+  ['dispose calls reset', 'dispose'],
+] as [string, 'reset' | 'dispose'][])('%s', (_, methodName) => {
   test('returns all variable to their original state', () => {
-    const { reset, state } = createObservableMap({
+    const { [methodName]: method, state } = createObservableMap({
       hola: 'hola',
       name: 'Sergio',
     });
@@ -13,32 +16,45 @@ describe('reset', () => {
     expect(state.hola).toBe('hello');
     expect(state.name).toBe('Manu');
 
-    reset();
+    method();
 
     expect(state.hola).toBe('hola');
     expect(state.name).toBe('Sergio');
   });
 
   test('extra properties get removed', () => {
-    const { reset, state } = createObservableMap<Record<string, string>>({});
+    const { [methodName]: method, state } = createObservableMap<Record<string, string>>({});
 
     state.hola = 'hello';
 
     expect(state).toHaveProperty('hola');
     expect(state.hola).toBe('hello');
 
-    reset();
+    method();
 
     expect(state).not.toHaveProperty('hola');
   });
 
   test('calls on', () => {
-    const { reset, on } = createObservableMap({ hola: 'hello' });
+    const { [methodName]: method, on } = createObservableMap({ hola: 'hello' });
     const subscription = jest.fn();
 
     on('reset', subscription);
 
-    reset();
+    method();
+
+    expect(subscription).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('dispose', () => {
+  test('calls on', () => {
+    const { dispose, on } = createObservableMap({ hola: 'hello' });
+    const subscription = jest.fn();
+
+    on('dispose', subscription);
+
+    dispose();
 
     expect(subscription).toHaveBeenCalledTimes(1);
   });

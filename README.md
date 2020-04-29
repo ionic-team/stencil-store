@@ -113,16 +113,20 @@ Reset the store to its initial state.
 
 Use the given subscriptions in the store. A subscription is an object that defines one or more of the properties `get`, `set` or `reset`.
 
+#### `store.dispose()`
+
+Resets the store and all the internal state of the store that should not survive between tests.
+
 
 ## Testing
 
-Like any global state library, state should be reset between each spec test.
-Use the `reset()` API in the `beforeEach` hook.
+Like any global state library, state should be `dispose`d between each spec test.
+Use the `dispose()` API in the `beforeEach` hook.
 
 ```ts
 import store from '../store';
 
 beforeEach(() => {
-  store.reset();
+  store.dispose();
 });
 ```
