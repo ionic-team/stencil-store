@@ -1,8 +1,9 @@
 import { newSpecPage } from '@stencil/core/testing';
 import { SimpleStore } from './display-store';
-import { reset } from '../../utils/greeting-store';
+import { dispose, reset } from '../../utils/greeting-store';
 
 describe('some-store', () => {
+  beforeEach(() => dispose());
   it('updates', async () => {
     reset();
     const { root, waitForChanges } = await newSpecPage({
