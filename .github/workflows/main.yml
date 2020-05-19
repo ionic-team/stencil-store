@@ -10,6 +10,7 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x]
+        stencil-version: [1.9.0, latest]
 
     steps:
     - uses: actions/checkout@v1
@@ -25,6 +26,7 @@ jobs:
         npm link
         cd test-app
         npm install
+        npm install @stencil/core@${{ matrix.stencil-version }}
         npm link @stencil/store
         npm run build -- --ci
         npm test
