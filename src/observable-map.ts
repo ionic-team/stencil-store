@@ -10,6 +10,7 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     get: [],
     set: [],
     reset: [],
+    delete: [],
   };
 
   const reset = (): void => {
@@ -40,6 +41,16 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     }
   };
 
+  const deleteProperty = <P extends keyof T>(propName: P & string) => {
+    const success = states.delete(propName);
+
+    if (success) {
+      handlers.delete.forEach((cb) => cb(propName));
+    }
+
+    return success;
+  }
+
   const state = (typeof Proxy === 'undefined'
     ? {}
     : new Proxy(defaultState, {
@@ -62,6 +73,9 @@ export const createObservableMap = <T extends { [key: string]: any }>(
           set(propName as any, value);
           return true;
         },
+        deleteProperty(_, propName) {
+          return deleteProperty(propName as any);
+        }
       })) as T;
 
   const on: OnHandler<T> = (eventName, callback) => {
@@ -95,12 +109,16 @@ export const createObservableMap = <T extends { [key: string]: any }>(
       if (subscription.reset) {
         on('reset', subscription.reset);
       }
+      if (subscription.delete) {
+        on('delete', subscription.delete);
+      }
     });
 
   return {
     state,
     get,
     set,
+    delete: deleteProperty,
     on,
     onChange,
     use,

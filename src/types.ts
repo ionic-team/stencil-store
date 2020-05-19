@@ -3,6 +3,7 @@ export interface Handlers<T> {
   get: GetEventHandler<T>[];
   reset: ResetEventHandler[];
   set: SetEventHandler<T>[];
+  delete: DeleteEventHandler<T>[];
 }
 
 export type SetEventHandler<StoreType> = (
@@ -11,12 +12,14 @@ export type SetEventHandler<StoreType> = (
   oldValue: any
 ) => void;
 export type GetEventHandler<StoreType> = (key: keyof StoreType) => void;
+export type DeleteEventHandler<StoreType> = (key: keyof StoreType) => void;
 export type ResetEventHandler = () => void;
 export type DisposeEventHandler = () => void;
 
 export interface OnHandler<StoreType> {
   (eventName: 'set', callback: SetEventHandler<StoreType>): () => void;
   (eventName: 'get', callback: GetEventHandler<StoreType>): () => void;
+  (eventName: 'delete', callback: DeleteEventHandler<StoreType>): () => void;
   (eventName: 'dispose', callback: DisposeEventHandler): () => void;
   (eventName: 'reset', callback: ResetEventHandler): () => void;
 }
@@ -32,6 +35,7 @@ export interface Subscription<StoreType> {
     newValue: StoreType[KeyFromStoreType],
     oldValue: StoreType[KeyFromStoreType]
   ): void;
+  delete?<KeyFromStoreType extends keyof StoreType>(key: KeyFromStoreType): void;
   reset?(): void;
 }
 
@@ -41,6 +45,10 @@ export interface Getter<T> {
 
 export interface Setter<T> {
   <P extends keyof T>(propName: P & string, value: T[P]): void;
+}
+
+export interface DeleteProperty<T> {
+  <P extends keyof T>(propName: P & string): void;
 }
 
 export interface ObservableMap<T> {
@@ -76,6 +84,17 @@ export interface ObservableMap<T> {
    * set('hola', 'ola')); // If you need to support IE11, use this other way.
    */
   set: Setter<T>;
+
+  /**
+   * Only useful if you need to support IE11.
+   *
+   * @example
+   * const { store, ...store } = createStore<Record<string, Item>>({ a: { id: 'a' } });
+   * 
+   * delete state.a; // If you don't need to support IE11, use this way.
+   * store.delete('a'); // If you need to support IE11, use this other way.
+   */
+  delete: DeleteProperty<T>;
 
   /**
    * Register a event listener, you can listen to `set`, `get` and `reset` events.
