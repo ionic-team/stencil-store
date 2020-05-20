@@ -35,7 +35,7 @@ export const stencilSubscription = <T>({ on }: ObservableMap<T>) => {
       const elm = getRenderingRef();
       if (elm) {
         appendToMap(elmsToUpdate, propName as string, elm);
-      }
+      }      
     });
 
     on('set', (propName) => {
@@ -45,6 +45,14 @@ export const stencilSubscription = <T>({ on }: ObservableMap<T>) => {
       }
       cleanupElements(elmsToUpdate);
     });
+
+    on('delete', (propName) => {
+      const elements = elmsToUpdate.get(propName as string);
+      if (elements) {
+        elmsToUpdate.set(propName as string, elements.filter(forceUpdate));
+      }
+      cleanupElements(elmsToUpdate);
+    })
 
     on('reset', () => {
       elmsToUpdate.forEach((elms) => elms.forEach(forceUpdate));

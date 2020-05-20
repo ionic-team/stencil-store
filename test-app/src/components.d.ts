@@ -10,6 +10,8 @@ export namespace Components {
         "storeKey": "hola" | "adios";
         "storeValue": string;
     }
+    interface DisplayMapStore {
+    }
     interface DisplayStore {
         "storeKey": "hello" | "goodbye";
     }
@@ -23,6 +25,12 @@ declare global {
     var HTMLChangeStoreElement: {
         prototype: HTMLChangeStoreElement;
         new (): HTMLChangeStoreElement;
+    };
+    interface HTMLDisplayMapStoreElement extends Components.DisplayMapStore, HTMLStencilElement {
+    }
+    var HTMLDisplayMapStoreElement: {
+        prototype: HTMLDisplayMapStoreElement;
+        new (): HTMLDisplayMapStoreElement;
     };
     interface HTMLDisplayStoreElement extends Components.DisplayStore, HTMLStencilElement {
     }
@@ -38,6 +46,7 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "change-store": HTMLChangeStoreElement;
+        "display-map-store": HTMLDisplayMapStoreElement;
         "display-store": HTMLDisplayStoreElement;
         "simple-store": HTMLSimpleStoreElement;
     }
@@ -47,6 +56,8 @@ declare namespace LocalJSX {
         "storeKey"?: "hola" | "adios";
         "storeValue"?: string;
     }
+    interface DisplayMapStore {
+    }
     interface DisplayStore {
         "storeKey"?: "hello" | "goodbye";
     }
@@ -54,6 +65,7 @@ declare namespace LocalJSX {
     }
     interface IntrinsicElements {
         "change-store": ChangeStore;
+        "display-map-store": DisplayMapStore;
         "display-store": DisplayStore;
         "simple-store": SimpleStore;
     }
@@ -63,6 +75,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "change-store": LocalJSX.ChangeStore & JSXBase.HTMLAttributes<HTMLChangeStoreElement>;
+            "display-map-store": LocalJSX.DisplayMapStore & JSXBase.HTMLAttributes<HTMLDisplayMapStoreElement>;
             "display-store": LocalJSX.DisplayStore & JSXBase.HTMLAttributes<HTMLDisplayStoreElement>;
             "simple-store": LocalJSX.SimpleStore & JSXBase.HTMLAttributes<HTMLSimpleStoreElement>;
         }
