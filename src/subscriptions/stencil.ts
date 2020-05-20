@@ -22,6 +22,43 @@ const cleanupElements = debounce((map: Map<string, any[]>) => {
 
 export const stencilSubscription = <T>({ on }: ObservableMap<T>) => {
   const elmsToUpdate = new Map<string, any[]>();
+  const elmsToSubscriptions = new Map<any, string[]>();
+  const cleanupMap = new Map<any, () => void>();
+
+  const reverseCleanup = (elm, propName) => {
+    if (cleanupMap.has(elm)) {
+      cleanupMap.get(elm)();
+    } else {
+      const previous = elmsToSubscriptions.get(elm) || [];
+      
+      elmsToSubscriptions.delete(elm);
+
+      const clean = debounce(() => {
+        const current = elmsToSubscriptions.get(elm);
+        
+        for (const key of previous) {
+          if (current.includes(key)) continue;
+
+          const elements = elmsToUpdate.get(key).filter((el) => el !== elm);
+          
+          if (elements.length) {
+            elmsToUpdate.set(key, elements);
+          } else {
+            elmsToUpdate.delete(key);
+          }
+
+          console.log(elmsToUpdate);
+        }
+
+        cleanupMap.delete(elm);
+      }, 0);
+
+      cleanupMap.set(elm, clean);
+    }
+
+    appendToMap(elmsToSubscriptions, elm, propName as string);
+  };
+
 
   if (typeof getRenderingRef === 'function') {
     // If we are not in a stencil project, we do nothing.
@@ -35,7 +72,9 @@ export const stencilSubscription = <T>({ on }: ObservableMap<T>) => {
       const elm = getRenderingRef();
       if (elm) {
         appendToMap(elmsToUpdate, propName as string, elm);
-      }      
+        reverseCleanup(elm, propName);
+      }
+
     });
 
     on('set', (propName) => {

@@ -7,6 +7,7 @@ import { state, Item } from '../../utils/map-store';
 })
 export class DisplayMapStore {
   private currentId: number = 0;
+  private deletionIndex: number = 0;
 
   render() {
     return (
@@ -17,9 +18,8 @@ export class DisplayMapStore {
         </div>
 
         <div>
-          {/* Always try to display the first 10 items (adds subscription for all) */}
-          {Array.from({ length: 10 }, (_, i) => {
-            const item = state[`id-${i}`];
+          {Array.from({ length: this.currentId + 10 - this.deletionIndex }, (_, i) => {
+            const item = state[`id-${i + this.deletionIndex}`];
 
             if (!item) return null;
 
@@ -54,7 +54,14 @@ export class DisplayMapStore {
   };
 
   private deleteFromMap = () => {
-    this.currentId--;
-    delete state[`id-${this.currentId}`];
+    const id = Object.keys(state)[0];
+
+    const toDelete = state[id];
+    console.log('will delete', toDelete);
+
+    if (id) {
+      delete state[id];
+      this.deletionIndex++;
+    }
   };
 }
