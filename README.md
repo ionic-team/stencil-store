@@ -95,7 +95,11 @@ Returns a `store` object with the following properties.
 
 The state object is proxied, i. e. you can directly get and set properties and Store will automatically take care of component re-rendering when the state object is changed.
 
-Note: [`Proxy`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) objects are not supported by IE11 (not even with a polyfill), so you need to use the `store.get` and `store.set` methods of the API if you wish to support IE11.
+Notes:
+
+- [`Proxy`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) objects are not supported by IE11 (not even with a polyfill), so you need to use the `store.get` and `store.set` methods of the API if you wish to support IE11.
+
+- If your state is an object, respectively not a primitive data, you have to assign a new value to make the listeners notice the change (`state.myObject = { ...myNewObject }`).
 
 #### `store.on(event, listener)`
 
