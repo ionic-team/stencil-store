@@ -99,7 +99,7 @@ Notes:
 
 - [`Proxy`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) objects are not supported by IE11 (not even with a polyfill), so you need to use the `store.get` and `store.set` methods of the API if you wish to support IE11.
 
-- If your state is an object, respectively not a primitive data, you have to assign a new value to make the listeners notice the change (`state.myObject = { ...myNewObject }`).
+- If your state is an object, respectively not a primitive data, you may need to assign a new value to make the listeners notice the change (`state.myObject = { ...myNewObject }`).
 
 #### `store.on(event, listener)`
 
