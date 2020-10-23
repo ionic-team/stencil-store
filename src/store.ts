@@ -7,6 +7,6 @@ export const createStore = <T extends { [key: string]: any }>(
   shouldUpdate?: (newV: any, oldValue, prop: keyof T) => boolean
 ): ObservableMap<T> => {
   const map = createObservableMap(defaultState, shouldUpdate);
-  stencilSubscription(map);
+  map.use(stencilSubscription());
   return map;
 };
