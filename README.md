@@ -93,7 +93,7 @@ Returns a `store` object with the following properties.
 
 #### `store.state`
 
-The state object is proxied, i. e. you can directly get and set properties and Store will automatically take care of component re-rendering when the state object is changed.
+The state object is proxied, i. e. you can directly get and set properties. If you access the state object in the `render` function of your component, Store will automatically re-render it when the state object is changed.
 
 Note: [`Proxy`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) objects are not supported by IE11 (not even with a polyfill), so you need to use the `store.get` and `store.set` methods of the API if you wish to support IE11.
 
