@@ -103,7 +103,7 @@ Add a listener to the store for a certain action.
 
 #### `store.onChange(propName, listener)`
 
-Add a listener that is called when a specific property changes.
+Add a listener that is called when a specific property changes (either from a `set` or `reset`).
 
 #### `store.get(propName)`
 
