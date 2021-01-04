@@ -1,5 +1,5 @@
 import { forceUpdate, getRenderingRef } from '@stencil/core';
-import { ObservableMap } from '../types';
+import { Subscription } from '../types';
 import { appendToMap, debounce } from '../utils';
 
 /**
@@ -20,35 +20,33 @@ const cleanupElements = debounce((map: Map<string, any[]>) => {
   }
 }, 2_000);
 
-export const stencilSubscription = <T>({ on }: ObservableMap<T>) => {
-  const elmsToUpdate = new Map<string, any[]>();
-
-  if (typeof getRenderingRef === 'function') {
+export const stencilSubscription = <T>(): Subscription<T> => {
+  if (typeof getRenderingRef !== 'function') {
     // If we are not in a stencil project, we do nothing.
     // This function is not really exported by @stencil/core.
+    return {};
+  }
 
-    on('dispose', () => {
-      elmsToUpdate.clear();
-    });
+  const elmsToUpdate = new Map<string, any[]>();
 
-    on('get', (propName) => {
+  return {
+    dispose: () => elmsToUpdate.clear(),
+    get: (propName) => {
       const elm = getRenderingRef();
       if (elm) {
         appendToMap(elmsToUpdate, propName as string, elm);
       }
-    });
-
-    on('set', (propName) => {
+    },
+    set: (propName) => {
       const elements = elmsToUpdate.get(propName as string);
       if (elements) {
         elmsToUpdate.set(propName as string, elements.filter(forceUpdate));
       }
       cleanupElements(elmsToUpdate);
-    });
-
-    on('reset', () => {
+    },
+    reset: () => {
       elmsToUpdate.forEach((elms) => elms.forEach(forceUpdate));
       cleanupElements(elmsToUpdate);
-    });
-  }
+    },
+  };
 };

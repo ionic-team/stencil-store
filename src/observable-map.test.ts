@@ -243,3 +243,236 @@ test('custom change detector, prevent all mutations', () => {
   expect(SET).not.toBeCalled();
   expect(store.state.str).toEqual('hola');
 });
+
+describe('use subscriptions', () => {
+  test('get is called whenever we get a prop', () => {
+    const store = createObservableMap({ str: 'hola' });
+    const get = jest.fn();
+    store.use({ get });
+
+    store.state.str;
+
+    expect(get).toHaveBeenCalledTimes(1);
+    expect(get).toHaveBeenCalledWith('str');
+  });
+
+  test('get is unregistered', () => {
+    const store = createObservableMap({ str: 'hola' });
+    const get = jest.fn();
+    const unregister = store.use({ get });
+    store.state.str;
+    expect(get).toHaveBeenCalledTimes(1);
+    get.mockClear();
+
+    unregister();
+    store.state.str;
+
+    expect(get).not.toHaveBeenCalled();
+  });
+
+  test('set is called whenever we set a prop', () => {
+    const store = createObservableMap({ str: 'hola' });
+    const set = jest.fn();
+    store.use({ set });
+
+    store.state.str = 'adios';
+
+    expect(set).toHaveBeenCalledTimes(1);
+    expect(set).toHaveBeenCalledWith('str', 'adios', 'hola');
+  });
+
+  test('set is unregistered', () => {
+    const store = createObservableMap({ str: 'hola' });
+    const set = jest.fn();
+    const unregister = store.use({ set });
+    store.state.str = 'adios';
+    expect(set).toHaveBeenCalledTimes(1);
+    set.mockClear();
+
+    unregister();
+    store.state.str = 'hello';
+
+    expect(set).not.toHaveBeenCalled();
+  });
+
+  test('reset is called when we reset the store', () => {
+    const store = createObservableMap({ str: 'hola' });
+    const reset = jest.fn();
+    store.use({ reset });
+
+    store.reset();
+
+    expect(reset).toHaveBeenCalledTimes(1);
+  });
+
+  test('reset is unregistered', () => {
+    const store = createObservableMap({ str: 'hola' });
+    const reset = jest.fn();
+    const unregister = store.use({ reset });
+    store.reset();
+    expect(reset).toHaveBeenCalledTimes(1);
+    reset.mockClear();
+
+    unregister();
+    store.reset();
+
+    expect(reset).not.toHaveBeenCalled();
+  });
+
+  test('dispose is called when we dispose the store', () => {
+    const store = createObservableMap({ str: 'hola' });
+    const dispose = jest.fn();
+    store.use({ dispose });
+
+    store.dispose();
+
+    expect(dispose).toHaveBeenCalledTimes(1);
+  });
+
+  test('dispose is unregistered', () => {
+    const store = createObservableMap({ str: 'hola' });
+    const dispose = jest.fn();
+    const unregister = store.use({ dispose });
+    store.dispose();
+    expect(dispose).toHaveBeenCalledTimes(1);
+    dispose.mockClear();
+
+    unregister();
+    store.dispose();
+
+    expect(dispose).not.toHaveBeenCalled();
+  });
+
+  test('subscription with several properties subscribes to all of them', () => {
+    const store = createObservableMap({ str: 'hola' });
+    const subscription = {
+      dispose: jest.fn(),
+      get: jest.fn(),
+      reset: jest.fn(),
+      set: jest.fn(),
+    };
+    store.use(subscription);
+
+    store.state.str;
+    expect(subscription.get).toHaveBeenCalledTimes(1);
+
+    store.state.str = 'adios';
+    expect(subscription.set).toHaveBeenCalledTimes(1);
+
+    store.reset();
+    expect(subscription.reset).toHaveBeenCalledTimes(1);
+
+    store.dispose();
+    expect(subscription.dispose).toHaveBeenCalledTimes(1);
+  });
+
+  test('subscription with several properties can be unregistered', () => {
+    const store = createObservableMap({ str: 'hola' });
+    const subscription = {
+      dispose: jest.fn(),
+      get: jest.fn(),
+      reset: jest.fn(),
+      set: jest.fn(),
+    };
+    const unregister = store.use(subscription);
+
+    store.state.str;
+    expect(subscription.get).toHaveBeenCalledTimes(1);
+    store.state.str = 'adios';
+    expect(subscription.set).toHaveBeenCalledTimes(1);
+    store.reset();
+    expect(subscription.reset).toHaveBeenCalledTimes(1);
+    store.dispose();
+    expect(subscription.dispose).toHaveBeenCalledTimes(1);
+    jest.clearAllMocks();
+
+    unregister();
+
+    store.state.str;
+    expect(subscription.get).not.toHaveBeenCalled();
+    store.state.str = 'adios';
+    expect(subscription.set).not.toHaveBeenCalled();
+    store.reset();
+    expect(subscription.reset).not.toHaveBeenCalled();
+    store.dispose();
+    expect(subscription.dispose).not.toHaveBeenCalled();
+  });
+
+  test('use can be passed several subscriptions', () => {
+    const store = createObservableMap({ str: 'hola' });
+    const subscription = {
+      dispose: jest.fn(),
+      get: jest.fn(),
+      reset: jest.fn(),
+      set: jest.fn(),
+    };
+    const subscription2 = {
+      dispose: jest.fn(),
+      get: jest.fn(),
+      reset: jest.fn(),
+      set: jest.fn(),
+    };
+    store.use(subscription, subscription2);
+
+    store.state.str;
+    expect(subscription.get).toHaveBeenCalledTimes(1);
+    expect(subscription2.get).toHaveBeenCalledTimes(1);
+
+    store.state.str = 'adios';
+    expect(subscription.set).toHaveBeenCalledTimes(1);
+    expect(subscription2.set).toHaveBeenCalledTimes(1);
+
+    store.reset();
+    expect(subscription.reset).toHaveBeenCalledTimes(1);
+    expect(subscription2.reset).toHaveBeenCalledTimes(1);
+
+    store.dispose();
+    expect(subscription.dispose).toHaveBeenCalledTimes(1);
+    expect(subscription2.dispose).toHaveBeenCalledTimes(1);
+  });
+
+  test('use can be passed several subscriptions and unregisters them all', () => {
+    const store = createObservableMap({ str: 'hola' });
+    const subscription = {
+      dispose: jest.fn(),
+      get: jest.fn(),
+      reset: jest.fn(),
+      set: jest.fn(),
+    };
+    const subscription2 = {
+      dispose: jest.fn(),
+      get: jest.fn(),
+      reset: jest.fn(),
+      set: jest.fn(),
+    };
+    const unregister = store.use(subscription, subscription2);
+    store.state.str;
+    expect(subscription.get).toHaveBeenCalledTimes(1);
+    expect(subscription2.get).toHaveBeenCalledTimes(1);
+    store.state.str = 'adios';
+    expect(subscription.set).toHaveBeenCalledTimes(1);
+    expect(subscription2.set).toHaveBeenCalledTimes(1);
+    store.reset();
+    expect(subscription.reset).toHaveBeenCalledTimes(1);
+    expect(subscription2.reset).toHaveBeenCalledTimes(1);
+    store.dispose();
+    expect(subscription.dispose).toHaveBeenCalledTimes(1);
+    expect(subscription2.dispose).toHaveBeenCalledTimes(1);
+    jest.clearAllMocks();
+
+    unregister();
+
+    store.state.str;
+    expect(subscription.get).not.toHaveBeenCalled();
+    expect(subscription2.get).not.toHaveBeenCalled();
+    store.state.str = 'adios';
+    expect(subscription.set).not.toHaveBeenCalled();
+    expect(subscription2.set).not.toHaveBeenCalled();
+    store.reset();
+    expect(subscription.reset).not.toHaveBeenCalled();
+    expect(subscription2.reset).not.toHaveBeenCalled();
+    store.dispose();
+    expect(subscription.dispose).not.toHaveBeenCalled();
+    expect(subscription2.dispose).not.toHaveBeenCalled();
+  });
+});

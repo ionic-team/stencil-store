@@ -26,6 +26,7 @@ export interface OnChangeHandler<StoreType> {
 }
 
 export interface Subscription<StoreType> {
+  dispose?(): void;
   get?<KeyFromStoreType extends keyof StoreType>(key: KeyFromStoreType): void;
   set?<KeyFromStoreType extends keyof StoreType>(
     key: KeyFromStoreType,
@@ -110,5 +111,5 @@ export interface ObservableMap<T> {
    * Registers a subscription that will be called whenever the user gets, sets, or
    * resets a value.
    */
-  use(...plugins: Subscription<T>[]): void;
+  use(...plugins: Subscription<T>[]): () => void;
 }

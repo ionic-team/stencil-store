@@ -84,18 +84,26 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     };
   };
 
-  const use = (...subscriptions: Subscription<T>[]): void =>
-    subscriptions.forEach((subscription) => {
+  const use = (...subscriptions: Subscription<T>[]): (() => void) => {
+    const unsubs = subscriptions.reduce((unsubs, subscription) => {
       if (subscription.set) {
-        on('set', subscription.set);
+        unsubs.push(on('set', subscription.set));
       }
       if (subscription.get) {
-        on('get', subscription.get);
+        unsubs.push(on('get', subscription.get));
       }
       if (subscription.reset) {
-        on('reset', subscription.reset);
+        unsubs.push(on('reset', subscription.reset));
       }
-    });
+      if (subscription.dispose) {
+        unsubs.push(on('dispose', subscription.dispose));
+      }
+
+      return unsubs;
+    }, []);
+
+    return () => unsubs.forEach((unsub) => unsub());
+  };
 
   return {
     state,
