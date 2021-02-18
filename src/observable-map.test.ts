@@ -245,14 +245,12 @@ test('custom change detector, prevent all mutations', () => {
 });
 
 test('forceUpdate', () => {
-  const store = createObservableMap(
-    {
-      str: 'hola',
-    }
-  );
+  const store = createObservableMap({
+    str: 'hola',
+  });
   const SET = jest.fn();
   store.on('set', SET);
-  store.forceUpdate("str");
-  store.forceUpdate("str");
+  store.forceUpdate('str');
+  store.forceUpdate('str');
   expect(SET).toHaveBeenCalledTimes(2);
 });
