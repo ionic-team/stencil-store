@@ -243,3 +243,16 @@ test('custom change detector, prevent all mutations', () => {
   expect(SET).not.toBeCalled();
   expect(store.state.str).toEqual('hola');
 });
+
+test('forceUpdate', () => {
+  const store = createObservableMap(
+    {
+      str: 'hola',
+    }
+  );
+  const SET = jest.fn();
+  store.on('set', SET);
+  store.forceUpdate("str");
+  store.forceUpdate("str");
+  expect(SET).toHaveBeenCalledTimes(2);
+});

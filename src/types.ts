@@ -111,4 +111,9 @@ export interface ObservableMap<T> {
    * resets a value.
    */
   use(...plugins: Subscription<T>[]): void;
+
+  /**
+   * Force a rerender of the specified key, just like the value changed.s
+   */
+  forceUpdate(key: keyof T);
 }
