@@ -253,4 +253,5 @@ test('forceUpdate', () => {
   store.forceUpdate('str');
   store.forceUpdate('str');
   expect(SET).toHaveBeenCalledTimes(2);
+  expect(SET).toBeCalledWith("str", "hola", "holsa");
 });

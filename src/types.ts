@@ -113,7 +113,7 @@ export interface ObservableMap<T> {
   use(...plugins: Subscription<T>[]): void;
 
   /**
-   * Force a rerender of the specified key, just like the value changed.s
+   * Force a rerender of the specified key, just like the value changed.
    */
   forceUpdate(key: keyof T);
 }
