@@ -105,6 +105,11 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     return () => unsubs.forEach((unsub) => unsub());
   };
 
+  const forceUpdate = (key: string) => {
+    const oldValue = states.get(key);
+    handlers.set.forEach((cb) => cb(key, oldValue, oldValue));
+  };
+
   return {
     state,
     get,
@@ -114,6 +119,7 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     use,
     dispose,
     reset,
+    forceUpdate,
   };
 };
 

@@ -476,3 +476,15 @@ describe('use subscriptions', () => {
     expect(subscription2.dispose).not.toHaveBeenCalled();
   });
 });
+
+test('forceUpdate', () => {
+  const store = createObservableMap({
+    str: 'hola',
+  });
+  const SET = jest.fn();
+  store.on('set', SET);
+  store.forceUpdate('str');
+  store.forceUpdate('str');
+  expect(SET).toHaveBeenCalledTimes(2);
+  expect(SET).toBeCalledWith('str', 'hola', 'hola');
+});
