@@ -119,7 +119,7 @@ Reset the store to its initial state.
 
 #### `store.use(...subscriptions)`
 
-Use the given subscriptions in the store. A subscription is an object that defines one or more of the properties `get`, `set` or `reset`.
+Use the given subscriptions in the store. A subscription is an object that defines one or more of the properties `get`, `set`, `dispose` or `reset`.
 
 #### `store.dispose()`
 
