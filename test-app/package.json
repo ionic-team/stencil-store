@@ -29,9 +29,9 @@
     "@stencil/store": "latest",
     "@types/jest": "^24.9.1",
     "@types/puppeteer": "2.0.1",
-    "jest": "24.9.0",
-    "jest-cli": "24.9.0",
-    "puppeteer": "2.1.1"
+    "jest": "^26",
+    "jest-cli": "^26",
+    "puppeteer": "^10"
   },
   "license": "MIT"
 }
