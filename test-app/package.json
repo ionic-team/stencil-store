@@ -2,8 +2,8 @@
   "name": "stencil-store-tests",
   "version": "0.0.1",
   "description": "Stencil Component Starter",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.js",
   "es2015": "dist/esm/index.mjs",
   "es2017": "dist/esm/index.mjs",
   "types": "dist/types/components.d.ts",
@@ -25,13 +25,13 @@
     "generate": "stencil generate"
   },
   "devDependencies": {
-    "@stencil/core": "~1.9.0",
+    "@stencil/core": "^2.8.0",
     "@stencil/store": "latest",
     "@types/jest": "^24.9.1",
     "@types/puppeteer": "2.0.1",
-    "jest": "24.9.0",
-    "jest-cli": "24.9.0",
-    "puppeteer": "2.1.1"
+    "jest": "^26",
+    "jest-cli": "^26",
+    "puppeteer": "^10"
   },
   "license": "MIT"
 }

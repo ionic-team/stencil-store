@@ -7,11 +7,11 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface ChangeStore {
-        "storeKey": "hola" | "adios";
+        "storeKey": 'hola' | 'adios';
         "storeValue": string;
     }
     interface DisplayStore {
-        "storeKey": "hello" | "goodbye";
+        "storeKey": 'hello' | 'goodbye';
     }
     interface SimpleStore {
         "next": () => Promise<void>;
@@ -44,11 +44,11 @@ declare global {
 }
 declare namespace LocalJSX {
     interface ChangeStore {
-        "storeKey"?: "hola" | "adios";
+        "storeKey"?: 'hola' | 'adios';
         "storeValue"?: string;
     }
     interface DisplayStore {
-        "storeKey"?: "hello" | "goodbye";
+        "storeKey"?: 'hello' | 'goodbye';
     }
     interface SimpleStore {
     }

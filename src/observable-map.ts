@@ -40,29 +40,31 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     }
   };
 
-  const state = (typeof Proxy === 'undefined'
-    ? {}
-    : new Proxy(defaultState, {
-        get(_, propName) {
-          return get(propName as any);
-        },
-        ownKeys(_) {
-          return Array.from(states.keys());
-        },
-        getOwnPropertyDescriptor() {
-          return {
-            enumerable: true,
-            configurable: true,
-          };
-        },
-        has(_, propName) {
-          return states.has(propName as any);
-        },
-        set(_, propName, value) {
-          set(propName as any, value);
-          return true;
-        },
-      })) as T;
+  const state = (
+    typeof Proxy === 'undefined'
+      ? {}
+      : new Proxy(defaultState, {
+          get(_, propName) {
+            return get(propName as any);
+          },
+          ownKeys(_) {
+            return Array.from(states.keys());
+          },
+          getOwnPropertyDescriptor() {
+            return {
+              enumerable: true,
+              configurable: true,
+            };
+          },
+          has(_, propName) {
+            return states.has(propName as any);
+          },
+          set(_, propName, value) {
+            set(propName as any, value);
+            return true;
+          },
+        })
+  ) as T;
 
   const on: OnHandler<T> = (eventName, callback) => {
     handlers[eventName].push(callback);

@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x]
-        stencil-version: [1.9.0, latest]
+        stencil-version: [2.4.0, latest]
 
     steps:
     - uses: actions/checkout@v1
