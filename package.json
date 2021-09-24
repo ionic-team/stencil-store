@@ -26,14 +26,15 @@
   "files": [
     "dist"
   ],
-  "author": "Manu Mtz.-Almeida",
+  "author": "Ionic Team",
   "license": "MIT",
+  "homepage": "https://stenciljs.com/docs/stencil-store",
   "peerDependencies": {
     "@stencil/core": ">=1.9.0"
   },
   "devDependencies": {
-    "@stencil/core": "2.4.0",
-    "@types/jest": "^24.9.1",
+    "@stencil/core": "^2.8.0",
+    "@types/jest": "^26.9.1",
     "jest": "26.6.3",
     "jest-cli": "26.6.3",
     "np": "^7.4.0",
@@ -44,6 +45,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/manucorporat/stencil-store.git"
+    "url": "git://github.com/ionic-team/stencil-store.git"
   }
 }
