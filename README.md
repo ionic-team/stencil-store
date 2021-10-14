@@ -77,9 +77,53 @@ const MyGlobalCounter = () => {
 
 ## API
 
-### `createStore<T>(initialState?: T, shouldUpdate?)`
+### `createStore<T>(initialState?: T | (() => T), shouldUpdate?)`
 
 Create a new store with the given initial state. The type is inferred from `initialState`, or can be passed as the generic type `T`.
+`initialState` can be a function that returns the actual initial state. This feature is just in case you have deep objects that mutate
+as otherwise we cannot keep track of those.
+
+```ts
+const { reset, state } = createStore(() => ({
+  pageA: {
+    count: 1
+  },
+  pageB {
+    count: 1
+  }
+}));
+
+state.pageA.count = 2;
+state.pageB.count = 3;
+
+reset();
+
+state.pageA.count; // 1
+state.pageB.count; // 1
+```
+
+Please, bear in mind that the object needs to be created inside the function, not just referenced. The following example won't work
+as you might want it to, as the returned object is always the same one.
+
+```ts
+const object = {
+  pageA: {
+    count: 1
+  },
+  pageB {
+    count: 1
+  }
+};
+const { reset, state } = createStore(() => object);
+
+state.pageA.count = 2;
+state.pageB.count = 3;
+
+reset();
+
+state.pageA.count; // 2
+state.pageB.count; // 3
+```
 
 By default, store performs a exact comparison (`===`) between the new value, and the previous one in order to prevent unnecessary rerenders, however, this behaviour can be changed by providing a `shouldUpdate` function through the second argument. When this function returns `false`, the value won't be updated. By providing a custom `shouldUpdate()` function, applications can create their own fine-grained change detection logic, beyond the default `===`. This may be useful for certain use-cases to avoid any expensive re-rendering.
 
