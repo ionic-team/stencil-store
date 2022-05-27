@@ -1,5 +1,5 @@
 name: 🐛 Bug Report
-description: Create a report to help us improve Stencil
+description: Create a report to help us improve Stencil Store
 title: 'bug: '
 body:
   - type: checkboxes
@@ -11,11 +11,11 @@ body:
           required: true
         - label: I agree to follow the [Code of Conduct](https://github.com/ionic-team/stencil/blob/main/CODE_OF_CONDUCT.md).
           required: true
-        - label: I have searched for [existing issues](https://github.com/ionic-team/stencil/issues) that already report this problem, without success.
+        - label: I have searched for [existing issues](https://github.com/ionic-team/stencil-store/issues) that already report this problem, without success.
           required: true
   - type: input
     attributes:
-      label: Stencil Version
+      label: Stencil Store Version
       description: The version number of Stencil where the issue is occurring.
     validations:
       required: true
