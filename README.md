@@ -121,6 +121,35 @@ Reset the store to its initial state.
 
 Use the given subscriptions in the store. A subscription is an object that defines one or more of the properties `get`, `set` or `reset`.
 
+```ts
+const { reset, state, use } = createStore({ a: 1, b: 2});
+
+const unlog = use({
+  get: (key) => {
+    console.log(`Someone's reading prop ${key}`);
+  },
+  set: (key, newValue, oldValue) => {
+    console.log(`Prop ${key} changed from ${oldValue} to ${newValue}`);
+  },
+  reset: () => {
+    console.log('Store got reset');
+  },
+  dispose: () => {
+    console.log('Store got disposed');
+  },
+})
+
+state.a; // Someone's reading prop a
+state.b = 3; // Prop b changed from 2 to 3
+reset(); // Store got reset
+
+unlog();
+
+state.a; // Nothing is logged
+state.b = 5; // Nothing is logged
+reset(); // Nothing is logged
+```
+
 #### `store.dispose()`
 
 Resets the store and all the internal state of the store that should not survive between tests.
