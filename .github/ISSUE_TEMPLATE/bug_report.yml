@@ -16,6 +16,12 @@ body:
   - type: input
     attributes:
       label: Stencil Store Version
+      description: The version number of Stencil Store where the issue is occurring.
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Stencil Version
       description: The version number of Stencil where the issue is occurring.
     validations:
       required: true
