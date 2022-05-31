@@ -46,5 +46,9 @@
   "repository": {
     "type": "git",
     "url": "git://github.com/ionic-team/stencil-store.git"
+  },
+  "volta": {
+    "node": "16.15.0",
+    "npm": "8.11.0"
   }
 }
