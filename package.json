@@ -7,12 +7,12 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && tsc -p . && npm run rollup",
-    "lint.prettier": "prettier --write 'src/**/*.ts'",
+    "prettier": "prettier --write 'src/**/*.ts'",
+    "prettier.dry-run": "prettier --check 'src/**/*.ts'",
     "release": "np",
     "rollup": "rollup -c rollup.config.js",
     "test": "jest",
-    "test.ci": "npm run test && npm run test.prettier",
-    "test.prettier": "prettier --check 'src/**/*.ts'",
+    "test.ci": "npm run test && npm run prettier.dry-run",
     "version": "npm run build"
   },
   "keywords": [
