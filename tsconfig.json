@@ -13,10 +13,14 @@
     "moduleResolution": "node",
     "module": "esnext",
     "target": "es2017",
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "jsx": "react",
-    "jsxFactory": "h"
+    "jsxFactory": "h",
+    "useUnknownInCatchVariables": true
   },
   "files": [
     "src/index.ts"
