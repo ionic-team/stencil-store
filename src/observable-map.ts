@@ -18,6 +18,8 @@ export const createObservableMap = <T extends { [key: string]: any }>(
   };
 
   const reset = (): void => {
+    // when resetting the state, the default state may be a function - unwrap it to invoke it.
+    // otherwise, the state won't be properly reset
     states = new Map<string, any>(Object.entries(unwrap(defaultState) ?? {}));
 
     handlers.reset.forEach((cb) => cb());

@@ -88,7 +88,7 @@ const { reset, state } = createStore(() => ({
   pageA: {
     count: 1
   },
-  pageB {
+  pageB: {
     count: 1
   }
 }));
@@ -110,7 +110,7 @@ const object = {
   pageA: {
     count: 1
   },
-  pageB {
+  pageB: {
     count: 1
   }
 };
