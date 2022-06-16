@@ -47,31 +47,29 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     }
   };
 
-  const state = (
-    typeof Proxy === 'undefined'
-      ? {}
-      : new Proxy(unwrappedState, {
-          get(_, propName) {
-            return get(propName as any);
-          },
-          ownKeys(_) {
-            return Array.from(states.keys());
-          },
-          getOwnPropertyDescriptor() {
-            return {
-              enumerable: true,
-              configurable: true,
-            };
-          },
-          has(_, propName) {
-            return states.has(propName as any);
-          },
-          set(_, propName, value) {
-            set(propName as any, value);
-            return true;
-          },
-        })
-  ) as T;
+  const state = (typeof Proxy === 'undefined'
+    ? {}
+    : new Proxy(unwrappedState, {
+        get(_, propName) {
+          return get(propName as any);
+        },
+        ownKeys(_) {
+          return Array.from(states.keys());
+        },
+        getOwnPropertyDescriptor() {
+          return {
+            enumerable: true,
+            configurable: true,
+          };
+        },
+        has(_, propName) {
+          return states.has(propName as any);
+        },
+        set(_, propName, value) {
+          set(propName as any, value);
+          return true;
+        },
+      })) as T;
 
   const on: OnHandler<T> = (eventName, callback) => {
     handlers[eventName].push(callback);
@@ -86,6 +84,8 @@ export const createObservableMap = <T extends { [key: string]: any }>(
         cb(newValue);
       }
     });
+    // We need to unwrap the defaultState because it might be a function.
+    // Otherwise we might not be sending the right reset value.
     const unReset = on('reset', () => cb(unwrap(defaultState)[propName]));
     return () => {
       unSet();
