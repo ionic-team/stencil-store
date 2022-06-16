@@ -18,7 +18,7 @@ export const createObservableMap = <T extends { [key: string]: any }>(
   };
 
   const reset = (): void => {
-    // when resetting the state, the default state may be a function - unwrap it to invoke it.
+    // When resetting the state, the default state may be a function - unwrap it to invoke it.
     // otherwise, the state won't be properly reset
     states = new Map<string, any>(Object.entries(unwrap(defaultState) ?? {}));
 
@@ -47,29 +47,31 @@ export const createObservableMap = <T extends { [key: string]: any }>(
     }
   };
 
-  const state = (typeof Proxy === 'undefined'
-    ? {}
-    : new Proxy(unwrappedState, {
-        get(_, propName) {
-          return get(propName as any);
-        },
-        ownKeys(_) {
-          return Array.from(states.keys());
-        },
-        getOwnPropertyDescriptor() {
-          return {
-            enumerable: true,
-            configurable: true,
-          };
-        },
-        has(_, propName) {
-          return states.has(propName as any);
-        },
-        set(_, propName, value) {
-          set(propName as any, value);
-          return true;
-        },
-      })) as T;
+  const state = (
+    typeof Proxy === 'undefined'
+      ? {}
+      : new Proxy(unwrappedState, {
+          get(_, propName) {
+            return get(propName as any);
+          },
+          ownKeys(_) {
+            return Array.from(states.keys());
+          },
+          getOwnPropertyDescriptor() {
+            return {
+              enumerable: true,
+              configurable: true,
+            };
+          },
+          has(_, propName) {
+            return states.has(propName as any);
+          },
+          set(_, propName, value) {
+            set(propName as any, value);
+            return true;
+          },
+        })
+  ) as T;
 
   const on: OnHandler<T> = (eventName, callback) => {
     handlers[eventName].push(callback);
