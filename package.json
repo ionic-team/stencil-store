@@ -7,12 +7,12 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && tsc -p . && npm run rollup",
-    "lint.prettier": "prettier --write 'src/**/*.ts'",
+    "prettier": "prettier --write 'src/**/*.ts'",
+    "prettier.dry-run": "prettier --check 'src/**/*.ts'",
     "release": "np",
     "rollup": "rollup -c rollup.config.js",
     "test": "jest",
-    "test.ci": "npm run test && npm run test.prettier",
-    "test.prettier": "prettier --check 'src/**/*.ts'",
+    "test.ci": "npm run test && npm run prettier.dry-run",
     "version": "npm run build"
   },
   "keywords": [
@@ -34,17 +34,21 @@
   },
   "devDependencies": {
     "@stencil/core": "^2.8.0",
-    "@types/jest": "^26",
-    "jest": "^26",
-    "jest-cli": "^26",
+    "@types/jest": "^28.1.1",
+    "jest": "^28.1.1",
+    "jest-cli": "^28.1.1",
     "np": "^7.4.0",
     "prettier": "^2.2.1",
     "rollup": "^2.39.0",
-    "ts-jest": "^26",
-    "typescript": "^4.1.5"
+    "ts-jest": "^28.0.4",
+    "typescript": "^4.7.3"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/ionic-team/stencil-store.git"
+  },
+  "volta": {
+    "node": "16.15.0",
+    "npm": "8.11.0"
   }
 }

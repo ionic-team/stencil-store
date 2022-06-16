@@ -25,10 +25,10 @@ describe.each([
   test('extra properties get removed', () => {
     const { [methodName]: method, state } = createObservableMap<Record<string, string>>({});
 
-    state.hola = 'hello';
+    state['hola'] = 'hello';
 
     expect(state).toHaveProperty('hola');
-    expect(state.hola).toBe('hello');
+    expect(state['hola']).toBe('hello');
 
     method();
 
