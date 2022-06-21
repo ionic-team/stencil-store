@@ -157,6 +157,67 @@ describe.each([
   }
 );
 
+describe('using a function as initial value', () => {
+  test('function gets invoked', () => {
+    const fn = jest.fn().mockReturnValue({ a: 1 });
+
+    createObservableMap(fn);
+
+    // We should not need to call this more than once
+    // when creating the proxy.
+    expect(fn).toHaveBeenCalledTimes(1);
+  });
+
+  test('returned value is used as object', () => {
+    const fn = jest.fn().mockReturnValue({ a: 1 });
+
+    const { state } = createObservableMap(fn);
+
+    expect(state).toHaveProperty('a', 1);
+  });
+
+  test('resetting resets deep objects', () => {
+    const fn = () => ({
+      a: {
+        b: 1,
+        c: 2,
+      },
+      d: [1, 2],
+    });
+    const { reset, state } = createObservableMap(fn);
+    state.a.b = 3;
+    state.a.c = 5;
+    state.d.push(1, 2);
+
+    reset();
+
+    expect(state.a).toHaveProperty('b', 1);
+    expect(state.a).toHaveProperty('c', 2);
+    expect(state).toHaveProperty('d', [1, 2]);
+  });
+
+  test('if the function does not create a new object, there is nothing we can do', () => {
+    const object = {
+      a: {
+        b: 1,
+        c: 2,
+      },
+      d: [1, 2],
+    };
+    const fn = () => object;
+    const { reset, state } = createObservableMap(fn);
+    state.a.b = 3;
+    state.a.c = 5;
+    state.d.push(1, 2);
+
+    reset();
+
+    expect(state.a).toHaveProperty('b', 3);
+    expect(state.a).toHaveProperty('c', 5);
+    expect(state).toHaveProperty('d', [1, 2, 1, 2]);
+  });
+});
+
 test('unregister events', () => {
   const { reset, state, on, onChange } = createObservableMap({
     hola: 'hola',

@@ -1,10 +1,15 @@
 import { OnHandler, OnChangeHandler, Subscription, ObservableMap, Handlers } from './types';
 
+type Invocable<T> = T | (() => T);
+
+const unwrap = <T>(val: Invocable<T>): T => (typeof val === 'function' ? (val as () => T)() : val);
+
 export const createObservableMap = <T extends { [key: string]: any }>(
-  defaultState?: T,
+  defaultState?: Invocable<T>,
   shouldUpdate: (newV: any, oldValue, prop: keyof T) => boolean = (a, b) => a !== b
 ): ObservableMap<T> => {
-  let states = new Map<string, any>(Object.entries(defaultState ?? {}));
+  const unwrappedState = unwrap(defaultState);
+  let states = new Map<string, any>(Object.entries(unwrappedState ?? {}));
   const handlers: Handlers<T> = {
     dispose: [],
     get: [],
@@ -13,7 +18,9 @@ export const createObservableMap = <T extends { [key: string]: any }>(
   };
 
   const reset = (): void => {
-    states = new Map<string, any>(Object.entries(defaultState ?? {}));
+    // When resetting the state, the default state may be a function - unwrap it to invoke it.
+    // otherwise, the state won't be properly reset
+    states = new Map<string, any>(Object.entries(unwrap(defaultState) ?? {}));
 
     handlers.reset.forEach((cb) => cb());
   };
@@ -43,7 +50,7 @@ export const createObservableMap = <T extends { [key: string]: any }>(
   const state = (
     typeof Proxy === 'undefined'
       ? {}
-      : new Proxy(defaultState, {
+      : new Proxy(unwrappedState, {
           get(_, propName) {
             return get(propName as any);
           },
@@ -79,7 +86,9 @@ export const createObservableMap = <T extends { [key: string]: any }>(
         cb(newValue);
       }
     });
-    const unReset = on('reset', () => cb(defaultState[propName]));
+    // We need to unwrap the defaultState because it might be a function.
+    // Otherwise we might not be sending the right reset value.
+    const unReset = on('reset', () => cb(unwrap(defaultState)[propName]));
     return () => {
       unSet();
       unReset();
