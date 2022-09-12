@@ -31,7 +31,7 @@
     "@types/puppeteer": "2.0.1",
     "jest": "^26",
     "jest-cli": "^26",
-    "puppeteer": "^10"
+    "puppeteer": "^17"
   },
   "license": "MIT"
 }
