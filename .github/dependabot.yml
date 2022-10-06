@@ -16,3 +16,10 @@ updates:
         versions: ["17", "18"]
       - dependency-name: "typescript"
         versions: ["4.8"]
+      # disable Jest updates until the Stencil ecosystem is able to handle newer versions
+      - dependency-name: '@types/jest'
+        versions: ['>=28']
+      - dependency-name: 'jest'
+        versions: ['>=28']
+      - dependency-name: 'jest-cli'
+        versions: ['>=28']
