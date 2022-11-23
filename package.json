@@ -7,8 +7,9 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && tsc -p . && npm run rollup",
-    "prettier": "prettier --write 'src/**/*.ts'",
-    "prettier.dry-run": "prettier --check 'src/**/*.ts'",
+    "prettier": "npm run prettier.base -- --write",
+    "prettier.base": "prettier --cache 'src/**/*.ts'",
+    "prettier.dry-run": "npm run prettier.base -- --list-different",
     "release": "np",
     "rollup": "rollup -c rollup.config.js",
     "test": "jest",
