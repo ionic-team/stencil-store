@@ -11,7 +11,7 @@
     "prettier.base": "prettier --cache 'src/**/*.ts'",
     "prettier.dry-run": "npm run prettier.base -- --list-different",
     "release": "np",
-    "rollup": "rollup -c rollup.config.js",
+    "rollup": "rollup -c rollup.config.mjs",
     "test": "jest",
     "test.ci": "npm run test && npm run prettier.dry-run",
     "version": "npm run build"
