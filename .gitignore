@@ -7,6 +7,7 @@ build/
 *.sw[mnpcod]
 *.log
 *.lock
+*.tgz
 *.tmp
 *.tmp.*
 log.txt
