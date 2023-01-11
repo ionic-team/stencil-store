@@ -10,6 +10,21 @@ on:
 
 jobs:
   build:
+    name: (build stencil ${{ matrix.stencil_version }})
+    strategy:
+      matrix:
+        # Run four different versions in parallel:
+        # 1. DEFAULT - uses the version of Stencil written in `package-lock.json`, keeping the same version used by the
+        # Stencil team as a source of truth
+        # 2. 2 - will install the latest release under major version 2 of Stencil. This should be kept as long as this
+        # library supports Stencil v2.Y.Z
+        # 3. v3-next - will install a pre-release version of Stencil v3, and is used to detect any regressions in a
+        # pre-release of v3.0.0.
+        # 4. latest - will install the latest version of Stencil. Prior to the Stencil v3.0.0 release, this will
+        # resolve to the latest version of Stencil v2. After the Stencil v3.0.0 release, it will resolve to the latest
+        # version of Stencil v3.
+        stencil_version: ['DEFAULT', '2', 'v3-next', 'latest']
+
     runs-on: ubuntu-latest
 
     steps:
@@ -27,6 +42,13 @@ jobs:
       shell: bash
     - name: Prettier Check
       run: npm run prettier.dry-run
+      shell: bash
+    - name: Install Stencil ${{matrix.stencil_version}}
+      run: npm install --save-dev @stencil/core@${{matrix.stencil_version}}
+      shell: bash
+      if: ${{ matrix.stencil_version != 'DEFAULT' }}
+    - name: Report Stencil Version
+      run: npm ls @stencil/core
       shell: bash
     - name: Build
       run: npm run build -- --ci
