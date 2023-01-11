@@ -31,7 +31,7 @@
   "license": "MIT",
   "homepage": "https://stenciljs.com/docs/stencil-store",
   "peerDependencies": {
-    "@stencil/core": ">=2.0.0"
+    "@stencil/core": ">=2.0.0 || >=3.0.0-beta.0"
   },
   "devDependencies": {
     "@stencil/core": "^2.8.0",
