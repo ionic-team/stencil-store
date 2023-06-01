@@ -18,7 +18,12 @@ jobs:
         # Stencil team as a source of truth
         # 2. 2 - will install the latest release under major version 2 of Stencil. This should be kept as long as this
         # library supports Stencil v2.Y.Z
-        stencil_version: ['DEFAULT', '2']
+        # 3. v4-next - will install a pre-release version of Stencil v4, and is used to detect any regressions in a
+        # pre-release of v4.0.0.
+        # 4. latest - will install the latest version of Stencil. Prior to the Stencil v4.0.0 release, this will
+        # resolve to the latest version of Stencil v3. After the Stencil v4.0.0 release, it will resolve to the latest
+        # version of Stencil v4.
+        stencil_version: ['DEFAULT', '2', 'v4-next', 'latest']
 
     runs-on: ubuntu-latest
 
