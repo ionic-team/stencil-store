@@ -13,7 +13,7 @@ updates:
     rebase-strategy: "disabled"
     ignore:
       - dependency-name: "@types/node"
-        versions: ["17", "18"]
+        versions: [">=21"]
       - dependency-name: "typescript"
         versions: [">=4.9"]
       # disable Jest updates until the Stencil ecosystem is able to handle newer versions
