@@ -40,6 +40,10 @@
       allowedVersions: '<21.0.0',
     },
     {
+      matchPackageNames: ['@types/jest', 'jest', 'jest-cli', 'ts-jest'],
+      groupName: 'Jest',
+    },
+    {
       matchPackageNames: ['typescript'],
       allowedVersions: '<5.1.0',
     },
