@@ -5,6 +5,10 @@
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "engines": {
+    "node": ">=12.0.0",
+    "npm": ">=6.0.0"
+  },
   "scripts": {
     "build": "rm -rf dist && tsc -p . && npm run rollup",
     "prettier": "npm run prettier.base -- --write",
