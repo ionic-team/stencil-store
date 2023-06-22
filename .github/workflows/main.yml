@@ -33,7 +33,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Use Node from Volta
-      uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c
+      uses: actions/setup-node@8170e22e8fa925daa88fcd5d20e66bbc3a163acb
       with:
         node-version-file: 'package.json'
         cache: 'npm'
