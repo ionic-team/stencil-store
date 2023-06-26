@@ -28,7 +28,6 @@
     "@stencil/core": "^2.8.0",
     "@stencil/store": "latest",
     "@types/jest": "^24.9.1",
-    "@types/puppeteer": "2.0.1",
     "jest": "^26",
     "jest-cli": "^26",
     "puppeteer": "^10"
