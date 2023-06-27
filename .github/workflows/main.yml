@@ -13,17 +13,16 @@ jobs:
     name: (build stencil ${{ matrix.stencil_version }})
     strategy:
       matrix:
-        # Run two different versions in parallel:
+        # Run with multiple different versions of Stencil in parallel:
         # 1. DEFAULT - uses the version of Stencil written in `package-lock.json`, keeping the same version used by the
         # Stencil team as a source of truth
         # 2. 2 - will install the latest release under major version 2 of Stencil. This should be kept as long as this
         # library supports Stencil v2.Y.Z
-        # 3. v4-next - will install a pre-release version of Stencil v4, and is used to detect any regressions in a
-        # pre-release of v4.0.0.
-        # 4. latest - will install the latest version of Stencil. Prior to the Stencil v4.0.0 release, this will
-        # resolve to the latest version of Stencil v3. After the Stencil v4.0.0 release, it will resolve to the latest
-        # version of Stencil v4.
-        stencil_version: ['DEFAULT', '2', 'v4-next', 'latest']
+        # 3. 3 - will install the latest release under major version 3 of Stencil. This should be kept as long as this
+        # library supports Stencil v3.Y.Z
+        # 4. 4 - will install the latest release under major version 4 of Stencil. This should be kept as long as this
+        # library supports Stencil v4.Y.Z
+        stencil_version: ['DEFAULT', '2', '3', '4']
 
     runs-on: ubuntu-latest
 
