@@ -30,7 +30,7 @@
     "@types/jest": "^24.9.1",
     "jest": "^26",
     "jest-cli": "^26",
-    "puppeteer": "^10"
+    "puppeteer": "^20.0.0"
   },
   "license": "MIT"
 }
