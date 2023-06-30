@@ -5,6 +5,9 @@ describe.each([
   ['dispose calls reset', 'dispose'],
 ] as [string, 'reset' | 'dispose'][])('%s', (_, methodName) => {
   test('returns all variable to their original state', () => {
+    if (Math.random() > 0.5) {
+      throw new Error('testing chaos');
+    }
     const { [methodName]: method, state } = createObservableMap({
       hola: 'hola',
       name: 'Sergio',
