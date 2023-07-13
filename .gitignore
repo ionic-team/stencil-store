@@ -12,6 +12,7 @@ build/
 log.txt
 *.sublime-project
 *.sublime-workspace
+*.tgz
 
 .stencil/
 .idea/
