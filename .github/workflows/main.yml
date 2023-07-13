@@ -12,6 +12,7 @@ jobs:
   build:
     name: (build stencil ${{ matrix.stencil_version }})
     strategy:
+      fail-fast: false
       matrix:
         # Run with multiple different versions of Stencil in parallel:
         # 1. DEFAULT - uses the version of Stencil written in `package-lock.json`, keeping the same version used by the
