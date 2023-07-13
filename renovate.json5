@@ -40,7 +40,7 @@
       allowedVersions: '<21.0.0',
     },
     {
-      matchPackageNames: ['@types/jest', 'jest', 'jest-cli', 'ts-jest'],
+      matchPackageNames: ['@types/jest', 'jest', 'ts-jest'],
       groupName: 'Jest',
     },
     {
