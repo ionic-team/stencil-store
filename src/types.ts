@@ -5,11 +5,7 @@ export interface Handlers<T> {
   set: SetEventHandler<T>[];
 }
 
-export type SetEventHandler<StoreType> = (
-  key: keyof StoreType,
-  newValue: any,
-  oldValue: any
-) => void;
+export type SetEventHandler<StoreType> = (key: keyof StoreType, newValue: any, oldValue: any) => void;
 export type GetEventHandler<StoreType> = (key: keyof StoreType) => void;
 export type ResetEventHandler = () => void;
 export type DisposeEventHandler = () => void;
@@ -31,7 +27,7 @@ export interface Subscription<StoreType> {
   set?<KeyFromStoreType extends keyof StoreType>(
     key: KeyFromStoreType,
     newValue: StoreType[KeyFromStoreType],
-    oldValue: StoreType[KeyFromStoreType]
+    oldValue: StoreType[KeyFromStoreType],
   ): void;
   reset?(): void;
 }

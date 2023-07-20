@@ -6,7 +6,7 @@ const unwrap = <T>(val: Invocable<T>): T => (typeof val === 'function' ? (val as
 
 export const createObservableMap = <T extends { [key: string]: any }>(
   defaultState?: Invocable<T>,
-  shouldUpdate: (newV: any, oldValue, prop: keyof T) => boolean = (a, b) => a !== b
+  shouldUpdate: (newV: any, oldValue, prop: keyof T) => boolean = (a, b) => a !== b,
 ): ObservableMap<T> => {
   const unwrappedState = unwrap(defaultState);
   let states = new Map<string, any>(Object.entries(unwrappedState ?? {}));

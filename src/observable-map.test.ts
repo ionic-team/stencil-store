@@ -63,99 +63,96 @@ describe('dispose', () => {
 describe.each([
   ['proxy', (state, _get, property) => state[property]],
   ['get fn', (_state, get, property) => get(property)],
-] as [string, <T, K extends keyof T>(s: T, get: (prop: K) => T[K], prop: K) => T[K]][])(
-  'get (%s)',
-  (_, getter) => {
-    test('returns the value for the property in the store', () => {
-      const { get, state } = createObservableMap({
-        hola: 'hello',
-      });
-
-      expect(getter(state, get, 'hola')).toBe('hello');
+] as [string, <T, K extends keyof T>(s: T, get: (prop: K) => T[K], prop: K) => T[K]][])('get (%s)', (_, getter) => {
+  test('returns the value for the property in the store', () => {
+    const { get, state } = createObservableMap({
+      hola: 'hello',
     });
 
-    test('returns the modified value after being set', () => {
-      const { get, state } = createObservableMap({
-        hola: 'hello',
-      });
+    expect(getter(state, get, 'hola')).toBe('hello');
+  });
 
-      state.hola = 'ola';
-
-      expect(getter(state, get, 'hola')).toBe('ola');
+  test('returns the modified value after being set', () => {
+    const { get, state } = createObservableMap({
+      hola: 'hello',
     });
 
-    test('calls on', () => {
-      const { get, on, state } = createObservableMap({
-        hola: 'hello',
-      });
-      const subscription = jest.fn();
-      on('get', subscription);
+    state.hola = 'ola';
 
-      getter(state, get, 'hola');
+    expect(getter(state, get, 'hola')).toBe('ola');
+  });
 
-      expect(subscription).toHaveBeenCalledWith('hola');
+  test('calls on', () => {
+    const { get, on, state } = createObservableMap({
+      hola: 'hello',
     });
-  }
-);
+    const subscription = jest.fn();
+    on('get', subscription);
+
+    getter(state, get, 'hola');
+
+    expect(subscription).toHaveBeenCalledWith('hola');
+  });
+});
 
 describe.each([
   ['proxy', (state, _set, prop, value) => (state[prop] = value)],
   ['set fn', (_state, set, prop, value) => set(prop, value)],
-] as [
-  string,
-  <T, K extends keyof T>(s: T, set: (prop: K, value: T[K]) => void, prop: K, value: T[K]) => void,
-][])('set (%s)', (_, setter) => {
-  test('sets the value for a property', () => {
-    const { set, state } = createObservableMap({
-      hola: 'hello',
+] as [string, <T, K extends keyof T>(s: T, set: (prop: K, value: T[K]) => void, prop: K, value: T[K]) => void][])(
+  'set (%s)',
+  (_, setter) => {
+    test('sets the value for a property', () => {
+      const { set, state } = createObservableMap({
+        hola: 'hello',
+      });
+
+      setter(state, set, 'hola', 'ola');
+
+      expect(state.hola).toBe('ola');
     });
 
-    setter(state, set, 'hola', 'ola');
+    test('calls on', () => {
+      const { set, on, state } = createObservableMap({
+        hola: 'hello',
+      });
+      const subscription = jest.fn();
+      on('set', subscription);
 
-    expect(state.hola).toBe('ola');
-  });
+      setter(state, set, 'hola', 'ola');
 
-  test('calls on', () => {
-    const { set, on, state } = createObservableMap({
-      hola: 'hello',
+      expect(subscription).toHaveBeenCalledWith('hola', 'ola', 'hello');
     });
-    const subscription = jest.fn();
-    on('set', subscription);
 
-    setter(state, set, 'hola', 'ola');
+    test('calls onChange', () => {
+      const { set, onChange, state } = createObservableMap({
+        hola: 'hello',
+      });
+      const subscription = jest.fn();
+      onChange('hola', subscription);
 
-    expect(subscription).toHaveBeenCalledWith('hola', 'ola', 'hello');
-  });
+      setter(state, set, 'hola', 'ola');
 
-  test('calls onChange', () => {
-    const { set, onChange, state } = createObservableMap({
-      hola: 'hello',
+      expect(subscription).toHaveBeenCalledWith('ola');
     });
-    const subscription = jest.fn();
-    onChange('hola', subscription);
 
-    setter(state, set, 'hola', 'ola');
+    test('enumerable keys', () => {
+      const { state } = createObservableMap<any>({});
+      expect(Object.keys(state)).toEqual([]);
+      state.hello = 'hola';
+      expect(Object.keys(state)).toEqual(['hello']);
+      expect(Object.getOwnPropertyNames(state)).toEqual(['hello']);
+      const copy = { ...state };
+      expect(copy).toEqual({ hello: 'hola' });
+    });
 
-    expect(subscription).toHaveBeenCalledWith('ola');
-  });
-
-  test('enumerable keys', () => {
-    const { state } = createObservableMap<any>({});
-    expect(Object.keys(state)).toEqual([]);
-    state.hello = 'hola';
-    expect(Object.keys(state)).toEqual(['hello']);
-    expect(Object.getOwnPropertyNames(state)).toEqual(['hello']);
-    const copy = { ...state };
-    expect(copy).toEqual({ hello: 'hola' });
-  });
-
-  test('in operator', () => {
-    const { state } = createObservableMap<any>({});
-    expect('hello' in state).toBe(false);
-    state.hello = 'hola';
-    expect('hello' in state).toBe(true);
-  });
-});
+    test('in operator', () => {
+      const { state } = createObservableMap<any>({});
+      expect('hello' in state).toBe(false);
+      state.hello = 'hola';
+      expect('hello' in state).toBe(true);
+    });
+  },
+);
 
 describe('using a function as initial value', () => {
   test('function gets invoked', () => {
@@ -279,7 +276,7 @@ test('custom change detector, values', () => {
     {
       str: 'hola',
     },
-    comparer
+    comparer,
   );
   store.state.str = 'hola';
   expect(comparer).toBeCalledWith('hola', 'hola', 'str');
@@ -294,7 +291,7 @@ test('custom change detector, prevent all mutations', () => {
     {
       str: 'hola',
     },
-    () => false
+    () => false,
   );
   const SET = jest.fn();
   store.on('set', SET);
