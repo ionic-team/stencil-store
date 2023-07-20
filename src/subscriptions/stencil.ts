@@ -11,8 +11,7 @@ import { appendToMap, debounce } from '../utils';
  *
  * Better leak in Edge than to be useless.
  */
-const isConnected = (maybeElement: any) =>
-  !('isConnected' in maybeElement) || maybeElement.isConnected;
+const isConnected = (maybeElement: any) => !('isConnected' in maybeElement) || maybeElement.isConnected;
 
 const cleanupElements = debounce((map: Map<string, any[]>) => {
   for (let key of map.keys()) {
