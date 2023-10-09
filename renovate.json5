@@ -47,6 +47,11 @@
       matchPackageNames: ['typescript'],
       allowedVersions: '<5.1.0',
     },
+    {
+      matchPackageNames: ['rollup'],
+      matchPackagePrefixes: ['@rollup'],
+      groupName: 'rollup,'
+    }
   ],
   // Never rebase the branch or update it unless manually requested to avoid noisy PR emails
   rebaseWhen: 'never',
