@@ -1,0 +1,37 @@
+name: Build Stencil Store
+
+on:
+  workflow_call:
+  # Make this a reusable workflow, no value needed
+  # https://docs.github.com/en/actions/using-workflows/reusing-workflows
+
+jobs:
+  build_stencil_store:
+    name: Build Stencil Store
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          # the pull_request_target event will consider the HEAD of `main` to be the SHA to use.
+          # attempt to use the SHA associated with a pull request and fallback to HEAD of `main`
+          ref: ${{ github.event_name == 'pull_request_target' && format('refs/pull/{0}/merge', github.event.number) || '' }}
+          persist-credentials: false
+
+      - name: Get Core Dependencies
+        uses: ./.github/workflows/actions/get-core-dependencies
+
+      - name: Stencil Store Build
+        run: npm run build
+        shell: bash
+
+      - name: Unit Tests
+        run: npm test
+        shell: bash
+
+      - name: Upload Build Artifacts
+        uses: ./.github/workflows/actions/upload-archive
+        with:
+          name: stencil-store
+          output: stencil-store-build.zip
+          paths: ./dist/
