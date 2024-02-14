@@ -1,5 +1,31 @@
 # Releasing Stencil Store
 
+## Production Releases
+
+Production Releases (or "Prod Releases", "Prod Builds") are installable instances of Stencil Store that are:
+- Published to the npm registry for distribution within and outside the Stencil team
+- Meant for general consumption by users
+
+### How to Publish
+
+Only members of the Stencil team may create prod builds of Stencil Store.
+To publish the package:
+1. Navigate to the [Stencil Store Prod Release GitHub Action](https://github.com/ionic-team/stencil-store/actions/workflows/release-prod.yml) in your browser.
+1. Select the 'Run Workflow' dropdown on the right hand side of the page
+1. The dropdown will ask you for a version type to publish.
+Stencil Store follows semantic versioning.
+Review the changes on `main` and select the most appropriate release type.
+1. Select 'Run Workflow'
+1. Allow the workflow to run. Upon completion, the output of the 'publish-npm' action will report the published version string.
+1. Navigate to the project's [Releases Page](https://github.com/ionic-team/stencil-store/releases)
+1. Select 'Draft a new release'
+1. Select the tag of the version you just created in the 'Choose a tag' dropdown
+1. Click "Generate release notes"
+1. Ensure this is the latest release
+1. Hit 'Publish release'
+
+Following a successful run of the workflow, the package can be installed from the npm registry like any other package.
+
 ## Development Releases
 
 Development Releases (or "Dev Releases", "Dev Builds") are installable instances of Stencil Store that are:

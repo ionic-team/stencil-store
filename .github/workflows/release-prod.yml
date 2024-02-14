@@ -1,0 +1,97 @@
+name: 'Production Release (TEST)'
+
+on:
+#  TODO(NOW): remove this
+  push:
+    branches:
+      - 'rw/prod-release-flow'
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        type: choice
+        description: Which version should be published?
+#        TODO(NOW): Remove
+        default: prepatch
+        options:
+          - prerelease
+          - prepatch
+          - preminor
+          - premajor
+          - patch
+          - minor
+          - major
+
+jobs:
+  build_stencil_store:
+    name: Build
+    uses: ./.github/workflows/build.yml
+
+  release_store_stencil:
+    name: Publish Dev Build
+    runs-on: ubuntu-latest
+    needs: [ build_stencil_store ]
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      # Log the input from GitHub Actions for easy traceability
+      - name: Log GitHub Input
+        run: |
+          echo "Version: ${{ inputs.version }}"
+        shell: bash
+
+      - name: Checkout Code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: Get Core Dependencies
+        uses: ./.github/workflows/actions/get-core-dependencies
+
+#      - name: Build
+#        uses: ./.github/workflows/build.yml
+
+      - name: Download Build Archive
+        uses: ./.github/workflows/actions/download-archive
+        with:
+          name: stencil-store
+          path: .
+          filename: stencil-store-build.zip
+
+      - name: Bump the Version
+#        TODO(NOW): Fix
+        run: npm version prepatch --no-git-tag
+
+      - name: Log Generated Changes
+        run: git --no-pager diff
+        shell: bash
+
+      # Commit changes resulting from bumping the version
+      # Note: The commit message is the result of performing the following actions:
+      # 1. Searching `package.json` for the string "version"
+      # 2. Assuming the first entry returned corresponds to this project's the version string
+      # 3. Stripping out all double quotes and commas from the version itself ($2 in awk corresponds to only the version here)
+      # 4. Printing the version string, prepended with a 'v' for 'version'
+      - name: Commit Release Preparations
+        run: |
+          git config user.name "Stencil Release Bot (on behalf of ${{ github.actor }})"
+          git config user.email "stencil-release-bot@ionic.io"
+          git add .
+          git commit -m "$(cat package.json | grep version | head -n 1 | awk '{ gsub(/"|,/, "", $2); print "v"$2}')"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+
+
+      - name: Push Branch to GitHub
+        run: |
+          git push origin
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Build Artifacts
+        uses: ./.github/workflows/actions/upload-archive
+        with:
+#          TODO(NOW): I just renamed this
+          name: stencil-store-for-publish
+          output: stencil-store-build-for-publish.zip
+          paths: ./dist/
