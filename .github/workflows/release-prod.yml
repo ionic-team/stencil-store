@@ -1,18 +1,12 @@
 name: 'Production Release (TEST)'
 
 on:
-#  TODO(NOW): remove this
-  push:
-    branches:
-      - 'rw/prod-release-flow'
   workflow_dispatch:
     inputs:
       version:
         required: true
         type: choice
         description: Which version should be published?
-#        TODO(NOW): Remove
-        default: prepatch
         options:
           - prerelease
           - prepatch
@@ -58,8 +52,7 @@ jobs:
           filename: stencil-store-build.zip
 
       - name: Bump the Version
-#        TODO(NOW): Fix
-        run: npm version prepatch --no-git-tag
+        run: npm version ${{ inputs.version }} --no-git-tag
 
       - name: Log Generated Changes
         run: git --no-pager diff
@@ -91,7 +84,6 @@ jobs:
       - name: Upload Build Artifacts
         uses: ./.github/workflows/actions/upload-archive
         with:
-#          TODO(NOW): I just renamed this
           name: stencil-store-for-publish
           output: stencil-store-build-for-publish.zip
           paths: ./dist/
