@@ -22,7 +22,7 @@ jobs:
     uses: ./.github/workflows/build.yml
 
   release_store_stencil:
-    name: Publish Dev Build
+    name: Publish Prod Build
     runs-on: ubuntu-latest
     needs: [ build_stencil_store ]
     permissions:
@@ -40,9 +40,6 @@ jobs:
 
       - name: Get Core Dependencies
         uses: ./.github/workflows/actions/get-core-dependencies
-
-#      - name: Build
-#        uses: ./.github/workflows/build.yml
 
       - name: Download Build Archive
         uses: ./.github/workflows/actions/download-archive
