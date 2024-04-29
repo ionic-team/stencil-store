@@ -1,6 +1,6 @@
 {
   "name": "@stencil/store",
-  "version": "2.0.15",
+  "version": "2.0.16",
   "description": "Store is a lightweight shared state library by the StencilJS core team. Implements a simple key/value map that efficiently re-renders components when necessary.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -56,6 +56,6 @@
   "prettier": "@ionic/prettier-config",
   "volta": {
     "node": "20.12.2",
-    "npm": "10.5.2"
+    "npm": "10.6.0"
   }
 }
