@@ -55,8 +55,10 @@
   ],
   // Never rebase the branch or update it unless manually requested to avoid noisy PR emails
   rebaseWhen: 'never',
-  // Note: Timezone for the schedule is specified as UTC
-  schedule: ['every weekday before 11am'],
+  /**
+   * Natural language syntax taken directly from renovate preset examples (with time adjusted).
+   */
+  schedule: ["before 8am on the first day of the month"],
   /**
    * Ensure semantic commits are enabled for commits + PR titles.
    *
